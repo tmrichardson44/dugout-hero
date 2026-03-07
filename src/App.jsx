@@ -347,7 +347,6 @@ export default function App() {
   // 1. Firebase Auth with Exponential Backoff Retries
   useEffect(() => {
     const initAuth = async () => {
-      const auth = getAuth(app);
       try {
         await signInAnonymously(auth);
       } catch (err) {
