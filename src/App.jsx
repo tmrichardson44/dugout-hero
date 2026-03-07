@@ -5,7 +5,7 @@ import {
   Users, ClipboardList, BarChart3, ChevronRight, ChevronLeft, 
   Settings as SettingsIcon, Plus, X, Wand2, RotateCcw, 
   Trash2, MapPin, Clock, Home, Navigation, Target, 
-  FileText, Printer, Check, UserMinus, CheckCircle2, Info, Save, Edit2, CalendarDays
+  FileText, Printer, Check, UserMinus, CheckCircle2, Info, Save, Edit2, CalendarDays, GripVertical
 } from 'lucide-react';
 
 // --- FIREBASE INFRASTRUCTURE ---
@@ -760,8 +760,32 @@ export default function App() {
                        const diff = statObj ? (statObj.avg - seasonConfig.battingTarget) : 0;
                        
                        return (
-                         <div key={idx} className="flex gap-4 items-center bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                            <div className="w-10 text-center font-black text-slate-300 text-xl">{idx + 1}</div>
+                         <div 
+                           key={idx} 
+                           draggable
+                           onDragStart={(e) => e.dataTransfer.setData('text/plain', idx + 1)}
+                           onDragOver={(e) => e.preventDefault()}
+                           onDrop={(e) => {
+                             e.preventDefault();
+                             const draggedSlot = parseInt(e.dataTransfer.getData('text/plain'));
+                             const dropSlot = idx + 1;
+                             if (draggedSlot === dropSlot || !draggedSlot) return;
+                             
+                             const newOrder = JSON.parse(JSON.stringify(selectedGame.battingOrder || {}));
+                             const temp = newOrder[dropSlot];
+                             
+                             if (newOrder[draggedSlot]) newOrder[dropSlot] = newOrder[draggedSlot];
+                             else delete newOrder[dropSlot];
+                             
+                             if (temp) newOrder[draggedSlot] = temp;
+                             else delete newOrder[draggedSlot];
+                             
+                             handleUpdateGame({ battingOrder: newOrder });
+                           }}
+                           className="flex gap-4 items-center bg-slate-50 p-3 rounded-2xl border border-slate-100 cursor-move hover:border-emerald-300 hover:shadow-md transition-all group"
+                         >
+                            <GripVertical className="w-5 h-5 text-slate-300 group-hover:text-emerald-500 transition-colors" />
+                            <div className="w-6 text-center font-black text-slate-300 text-xl">{idx + 1}</div>
                             <select 
                                value={pId || ''}
                                onChange={(e) => {
