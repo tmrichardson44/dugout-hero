@@ -346,16 +346,26 @@ export default function App() {
 
   // 1. Firebase Auth with Exponential Backoff Retries
   useEffect(() => {
+    let timeoutId;
     const initAuth = async () => {
       try {
         await signInAnonymously(auth);
       } catch (err) {
         console.error("Auth fail", err);
+        // If auth completely fails (e.g. they didn't enable Anonymous auth), still let the app load
+        setIsLoading(false);
       }
     };
     initAuth();
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      // Give it a fallback to stop loading if listeners don't fire quickly
+      if (!user) timeoutId = setTimeout(() => setIsLoading(false), 3000);
+    });
+    return () => {
+      unsubscribe();
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   // 2. Data Listeners
@@ -367,17 +377,25 @@ export default function App() {
     const unsubP = onSnapshot(base('players'), (snap) => {
       const data = snap.docs.map(d => ({ ...d.data(), firebaseId: d.id }));
       setPlayers(data);
-      if (snap.empty && isLoading) INITIAL_PLAYERS.forEach(p => addDoc(base('players'), p));
+      if (snap.empty && isLoading) {
+         INITIAL_PLAYERS.forEach(p => addDoc(base('players'), p).catch(console.error));
+      }
       setIsLoading(false);
-    }, (err) => console.error("Players sync fail", err));
+    }, (err) => {
+       console.error("Players sync fail", err);
+       setIsLoading(false);
+    });
 
     const unsubG = onSnapshot(base('games'), (snap) => {
       setGames(snap.docs.map(d => ({ ...d.data(), firebaseId: d.id })));
     }, (err) => console.error("Games sync fail", err));
 
     const unsubC = onSnapshot(configDoc, (snap) => {
-      if (snap.exists()) setSeasonConfig(snap.data());
-      else setDoc(configDoc, INITIAL_CONFIG);
+      if (snap.exists()) {
+        setSeasonConfig(snap.data());
+      } else {
+        setDoc(configDoc, INITIAL_CONFIG).catch(console.error);
+      }
     }, (err) => console.error("Config sync fail", err));
 
     return () => { unsubP(); unsubG(); unsubC(); };
