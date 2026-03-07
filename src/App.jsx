@@ -401,14 +401,6 @@ export default function App() {
     return () => { unsubP(); unsubG(); unsubC(); };
   }, [user]);
 
-  // Local Storage Persistence for Dummy Mode
-  useEffect(() => {
-    if (firebaseConfig.projectId === "dummy" && !isLoading) {
-      localStorage.setItem('dummy_players', JSON.stringify(players));
-      localStorage.setItem('dummy_games', JSON.stringify(games));
-      localStorage.setItem('dummy_config', JSON.stringify(seasonConfig));
-    }
-  }, [players, games, seasonConfig, isLoading]);
 
   // Derived Helpers
   const selectedGame = useMemo(() => games.find(g => g.id === selectedGameId), [games, selectedGameId]);
