@@ -634,9 +634,11 @@ export default function App() {
                            <th className="text-left py-2 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Player</th>
                            {Array.from({ length: seasonConfig.innings || 6 }).map((_, inn) => {
                              const assignmentsThisInning = Object.values(selectedGame.field?.[inn] || {});
-                             const isMissing = activePositions.some(pos => !assignmentsThisInning.includes(pos.id));
+                             const missingPositions = activePositions.filter(pos => !assignmentsThisInning.includes(pos.id)).map(p => p.id);
+                             const isMissing = missingPositions.length > 0;
+                             const tooltipText = isMissing ? `Missing: ${missingPositions.join(', ')}` : '';
                              return (
-                               <th key={inn} className={`py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${isMissing ? 'text-rose-500 animate-pulse' : 'text-slate-400'}`}>Inn {inn + 1}</th>
+                               <th key={inn} title={tooltipText} className={`py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${isMissing ? 'text-rose-500 animate-pulse cursor-help' : 'text-slate-400'}`}>Inn {inn + 1}</th>
                              );
                            })}
                          </tr>
