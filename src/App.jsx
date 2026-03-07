@@ -326,12 +326,14 @@ function TeamView({ players, onAddPlayer, onEditPlayer, onDeletePlayer }) {
                <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center font-black text-emerald-600 border border-emerald-100 text-lg shadow-inner">{p.number}</div>
                <div>
                   <p className="font-black text-slate-900 text-lg uppercase tracking-tighter leading-none mb-1">{p.name}</p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex gap-2">
-                    <span>T: {p.throws}</span> • <span>B: {p.bats}</span>
-                    {(p.willPitch || p.willCatch) && <span>•</span>}
-                    {p.willPitch && <span className="text-indigo-500">P</span>}
-                    {p.willCatch && <span className="text-rose-500">C</span>}
-                  </p>
+                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-3 mt-1 cursor-default">
+                    <span className="flex items-center gap-1"><span className="text-slate-400 tracking-widest text-[10px]">Bats</span> {p.bats}</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="flex items-center gap-1"><span className="text-slate-400 tracking-widest text-[10px]">Throws</span> {p.throws}</span>
+                    {(p.willPitch || p.willCatch) && <span className="text-slate-300">•</span>}
+                    {p.willPitch && <span className="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded text-[10px] tracking-widest font-black">Pitcher</span>}
+                    {p.willCatch && <span className="bg-rose-50 text-rose-600 px-2 py-0.5 rounded text-[10px] tracking-widest font-black">Catcher</span>}
+                  </div>
                </div>
              </div>
              <div className="flex items-center gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all">
@@ -613,8 +615,14 @@ export default function App() {
                   </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100 focus-within:border-emerald-500 focus-within:bg-white transition-all">
-                     <CalendarDays className="w-4 h-4 text-slate-400 shrink-0" />
+                  <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100 focus-within:border-emerald-500 focus-within:bg-white transition-all relative">
+                     <CalendarDays className="w-4 h-4 text-slate-400 shrink-0 cursor-pointer" />
+                     <input type="date" className="absolute left-3 w-4 h-4 opacity-0 cursor-pointer" onChange={(e) => {
+                       if (e.target.value) {
+                         const d = new Date(e.target.value + 'T00:00:00');
+                         if (!isNaN(d)) handleUpdateGame({ date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) });
+                       }
+                     }} />
                      <input className="bg-transparent font-bold text-slate-700 outline-none w-full text-sm placeholder:text-slate-300" placeholder="Date (e.g. Oct 12)" value={selectedGame.date || ''} onChange={(e) => handleUpdateGame({ date: e.target.value })} />
                   </div>
                   <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100 focus-within:border-emerald-500 focus-within:bg-white transition-all">
@@ -678,7 +686,11 @@ export default function App() {
                                     </button>
                                     <div>
                                       <p className="font-black text-sm text-slate-900 uppercase leading-none">{p.name}</p>
-                                      <p className="text-[10px] font-bold text-slate-400 leading-none mt-1">#{p.number}</p>
+                                      <div className="flex items-center gap-1 mt-1">
+                                        <p className="text-[10px] font-bold text-slate-400 leading-none">#{p.number}</p>
+                                        {p.willPitch && <span className="text-[8px] bg-indigo-50 text-indigo-600 px-1 py-0.5 rounded-sm font-black uppercase tracking-widest leading-none">P</span>}
+                                        {p.willCatch && <span className="text-[8px] bg-rose-50 text-rose-600 px-1 py-0.5 rounded-sm font-black uppercase tracking-widest leading-none">C</span>}
+                                      </div>
                                     </div>
                                   </div>
                                </td>
