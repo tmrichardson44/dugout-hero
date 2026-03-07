@@ -39,6 +39,7 @@ const INITIAL_CONFIG = {
   rosterSize: 13,
   innings: 6,
   battingTarget: 6.5,
+  enableTrends: true,
   enabledPositions: ["P", "C", "1B", "2B", "3B", "SS", "LF", "LC", "CF", "RC", "RF"]
 };
 
@@ -183,9 +184,26 @@ function SeasonSettingsView({ seasonConfig, onSave }) {
                 <input type="number" className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-black outline-none" value={draft.innings || 6} onChange={(e) => setDraft({...draft, innings: parseInt(e.target.value) || 6})} />
               </div>
             </div>
-            <div className="bg-emerald-600/5 p-5 rounded-2xl border border-emerald-100 flex gap-4">
-              <Target className="w-6 h-6 text-emerald-600 shrink-0" />
-              <p className="text-[10px] font-bold text-emerald-900 leading-relaxed uppercase">Optimal batting averages are calculated automatically based on your roster size.</p>
+            <div className="bg-emerald-600/5 p-5 rounded-2xl border border-emerald-100 flex flex-col gap-3">
+              <div className="flex justify-between items-center w-full">
+                <div className="flex gap-4 items-center">
+                  <BarChart3 className="w-6 h-6 text-emerald-600 shrink-0" />
+                  <p className="text-[10px] font-bold text-emerald-900 leading-relaxed uppercase">
+                    Track Lineup Trends & Optimal Batting Average
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setDraft({...draft, enableTrends: draft.enableTrends !== false ? false : true })}
+                  className={`w-12 h-6 rounded-full transition-all relative ${draft.enableTrends !== false ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                >
+                  <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${draft.enableTrends !== false ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
+              {draft.enableTrends !== false && (
+                <div className="pl-10 text-[10px] font-bold text-emerald-800 leading-relaxed uppercase">
+                  Target Range: <span className="text-emerald-600 font-black tracking-widest bg-emerald-100 px-2 py-1 rounded-lg ml-1">{(((draft.rosterSize || 12) / 2) - 1).toFixed(2)} - {(((draft.rosterSize || 12) / 2) + 0.75).toFixed(2)}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -787,7 +805,12 @@ export default function App() {
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 py-4 px-6 flex justify-around items-center z-[60] shadow-lg no-print">
-        {[{t:'games', i:ClipboardList, l:'Games'}, {t:'team', i:Users, l:'Team'}, {t:'home', i:BarChart3, l:'Lineup Trends'}, {t:'settings', i:SettingsIcon, l:'Setup'}].map(tab => (
+        {[
+          {t:'games', i:ClipboardList, l:'Games'}, 
+          {t:'team', i:Users, l:'Team'}, 
+          ...(seasonConfig.enableTrends !== false ? [{t:'home', i:BarChart3, l:'Lineup Trends'}] : []), 
+          {t:'settings', i:SettingsIcon, l:'Setup'}
+        ].map(tab => (
           <button key={tab.t} onClick={() => { setActiveTab(tab.t); setSelectedGameId(null); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === tab.t ? 'text-emerald-600 scale-110' : 'text-slate-300'}`}>
             <tab.i className="w-8 h-8" />
             <span className="text-[10px] font-black uppercase tracking-widest leading-none">{tab.l}</span>
