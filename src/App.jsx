@@ -1,7 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import { 
+  Users, ClipboardList, BarChart3, ChevronRight, ChevronLeft, 
+  Settings as SettingsIcon, Plus, X, Wand2, RotateCcw, 
+  Trash2, MapPin, Clock, Home, Navigation, Target, 
+  FileText, Printer, Check, UserMinus, CheckCircle2, Info, Save, Edit2, CalendarDays
+} from 'lucide-react';
+
 // --- FIREBASE INFRASTRUCTURE ---
-import { db } from './firebase';
+import { db, auth } from './firebase';
 const appId = typeof window.__app_id !== 'undefined' ? window.__app_id : 'dugout-hero-v18';
 
 // --- MASTER DATA ---
