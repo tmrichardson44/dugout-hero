@@ -334,7 +334,7 @@ function TeamView({ players, onAddPlayer, onEditPlayer, onDeletePlayer }) {
 // --- MAIN APP COMPONENT ---
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('home'); 
+  const [activeTab, setActiveTab] = useState('games'); 
   const [selectedGameId, setSelectedGameId] = useState(null);
   const [gameSubTab, setGameSubTab] = useState('matrix'); 
   const [user, setUser] = useState(null);
@@ -787,7 +787,7 @@ export default function App() {
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 py-4 px-6 flex justify-around items-center z-[60] shadow-lg no-print">
-        {[{t:'home', i:BarChart3, l:'Stats'}, {t:'games', i:ClipboardList, l:'Games'}, {t:'team', i:Users, l:'Team'}, {t:'settings', i:SettingsIcon, l:'Setup'}].map(tab => (
+        {[{t:'games', i:ClipboardList, l:'Games'}, {t:'team', i:Users, l:'Team'}, {t:'home', i:BarChart3, l:'Lineup Trends'}, {t:'settings', i:SettingsIcon, l:'Setup'}].map(tab => (
           <button key={tab.t} onClick={() => { setActiveTab(tab.t); setSelectedGameId(null); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === tab.t ? 'text-emerald-600 scale-110' : 'text-slate-300'}`}>
             <tab.i className="w-8 h-8" />
             <span className="text-[10px] font-black uppercase tracking-widest leading-none">{tab.l}</span>
