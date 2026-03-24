@@ -400,23 +400,20 @@ export default function DugoutHeroCore({
     //   - avg > target (batting too late on average)  → give a LOW slot (bat earlier) to pull avg DOWN
     //   - avg < target (batting too early on average) → give a HIGH slot (bat later)  to pull avg UP
     // Over time this converges everyone toward the target batting range.
-    const sortedPlayers = [...playersPresent].sort((a, b) => {
-      const statA = seasonStats.find(s => s.id === a.id);
-      const statB = seasonStats.find(s => s.id === b.id);
-      // Players with no history are treated as if at the target (neutral priority).
-      const avgA = statA?.gameCount > 0 ? statA.avg : target;
-      const avgB = statB?.gameCount > 0 ? statB.avg : target;
-
-      const devA = avgA - target; // positive = batting too late, negative = batting too early
-      const devB = avgB - target;
-
-      // Small random noise prevents rigid lock-in for players already near the target.
-      const noiseA = (Math.random() - 0.5) * 0.2;
-      const noiseB = (Math.random() - 0.5) * 0.2;
-
-      // Sort DESCENDING by deviation: highest (too late) → slot 1; lowest (too early) → slot N
-      return (devB + noiseB) - (devA + noiseA);
+    //
+    // IMPORTANT: Math.random() must be called BEFORE sort (not inside the comparator),
+    // because JS sort calls the comparator multiple times per element, producing
+    // inconsistent results and effectively neutralizing the shuffle.
+    const withKeys = playersPresent.map(p => {
+      const stat = seasonStats.find(s => s.id === p.id);
+      const avg = stat?.gameCount > 0 ? stat.avg : target;
+      const dev = avg - target; // positive = too late, negative = too early
+      const noise = (Math.random() - 0.5) * 0.5; // jitter so near-target players still rotate
+      return { player: p, sortKey: dev + noise };
     });
+
+    // Sort descending: highest sortKey (avg too late) → slot 1; lowest (avg too early) → slot N
+    const sortedPlayers = withKeys.sort((a, b) => b.sortKey - a.sortKey).map(x => x.player);
 
     const newOrder = {};
     sortedPlayers.forEach((p, idx) => {
