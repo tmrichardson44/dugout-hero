@@ -106,7 +106,7 @@ export default function ProProfile() {
                 {currentUser?.displayName?.[0] || currentUser?.email?.[0] || '?'}
               </div>
               <div>
-                <h1 className="text-2xl font-black text-slate-800 tracking-tighter uppercase">{currentUser?.displayName || 'Dugout Hero User'}</h1>
+                <h1 className="text-2xl font-black text-slate-800 tracking-tighter uppercase">{currentUser?.displayName || 'Lineup Hero User'}</h1>
                 <p className="text-slate-500 font-bold">{currentUser?.email}</p>
                 {currentUser?.isAdmin && <span className="inline-block mt-2 bg-rose-100 text-rose-700 text-[10px] uppercase font-black tracking-widest px-2 py-1 rounded-md">Super Admin</span>}
               </div>

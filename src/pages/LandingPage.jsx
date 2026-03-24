@@ -26,7 +26,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col items-center p-8">
       <div className="flex items-center mb-16 mt-16">
         <GreenDiamondLogo />
-        <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">Dugout Hero <span className="text-emerald-600">PRO</span></h1>
+        <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">Lineup Hero <span className="text-emerald-600">PRO</span></h1>
       </div>
 
       <div className="max-w-2xl text-center space-y-8">

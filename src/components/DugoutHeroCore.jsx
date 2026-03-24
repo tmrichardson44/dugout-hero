@@ -433,7 +433,7 @@ export default function DugoutHeroCore({
                 <div className="flex items-center">
                   <GreenDiamondLogo />
                   <h1 className="text-2xl font-black tracking-tighter uppercase leading-none">
-                     {HeaderBadge ? 'Dugout Hero PRO' : 'Dugout Hero'}
+                     {HeaderBadge ? 'Lineup Hero PRO' : 'Lineup Hero'}
                   </h1>
                 </div>
               )}

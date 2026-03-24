@@ -109,7 +109,7 @@ export default function ProDashboard() {
       )}
 
       <nav className="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg relative z-10">
-        <div className="font-black tracking-widest uppercase">Dugout Hero <span className="text-emerald-400">PRO</span></div>
+        <div className="font-black tracking-widest uppercase">Lineup Hero <span className="text-emerald-400">PRO</span></div>
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-blue-300 hidden sm:inline-block mr-2">{currentUser?.email}</span>
           <Link to="/pro/profile" className="bg-blue-700 text-white text-[10px] font-black px-4 py-2 rounded-xl hover:bg-blue-800 transition uppercase tracking-widest">
