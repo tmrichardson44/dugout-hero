@@ -372,12 +372,16 @@ export default function DugoutHeroCore({
     for (let inn = 0; inn < (seasonConfig.innings || 6); inn++) {
       let cur = {}; let asgIds = new Set(); let pool = [...fIds];
       if (fIds.includes("P")) {
+        // Always remove P from the general pool — only willPitch players may pitch
+        pool = pool.filter(x => x !== "P");
         const pCand = tracker.filter(p => p.willPitch && p.last !== 'P' && !asgIds.has(p.id)).sort(() => Math.random() - 0.5)[0];
-        if (pCand) { cur[pCand.id] = "P"; pCand.last = "P"; asgIds.add(pCand.id); pool = pool.filter(x => x !== "P"); }
+        if (pCand) { cur[pCand.id] = "P"; pCand.last = "P"; asgIds.add(pCand.id); }
       }
       if (fIds.includes("C")) {
+        // Always remove C from the general pool — only willCatch players may catch
+        pool = pool.filter(x => x !== "C");
         const cCand = tracker.filter(p => p.willCatch && p.last !== 'C' && !asgIds.has(p.id)).sort(() => Math.random() - 0.5)[0];
-        if (cCand) { cur[cCand.id] = "C"; cCand.last = "C"; asgIds.add(cCand.id); pool = pool.filter(x => x !== "C"); }
+        if (cCand) { cur[cCand.id] = "C"; cCand.last = "C"; asgIds.add(cCand.id); }
       }
       const bLimit = Math.max(0, playersPresent.length - activePositions.length);
       tracker.filter(p => !asgIds.has(p.id)).sort((a,b) => a.sat - b.sat || Math.random() - 0.5).slice(0, bLimit).forEach(p => { cur[p.id] = "Bench"; p.sat++; p.last = "Bench"; asgIds.add(p.id); });
