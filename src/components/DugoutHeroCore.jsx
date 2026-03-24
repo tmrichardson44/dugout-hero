@@ -393,17 +393,29 @@ export default function DugoutHeroCore({
 
   const autoGenerateOrder = async () => {
     if (!selectedGame || playersPresent.length === 0) return;
-    
-    // Sort players by their season average (lowest first, meaning they get the first spots in the order).
+
+    const target = seasonConfig.battingTarget || 6.5;
+
+    // Mean-reverting sort: each player's deviation from target determines their slot.
+    //   - avg > target (batting too late on average)  → give a LOW slot (bat earlier) to pull avg DOWN
+    //   - avg < target (batting too early on average) → give a HIGH slot (bat later)  to pull avg UP
+    // Over time this converges everyone toward the target batting range.
     const sortedPlayers = [...playersPresent].sort((a, b) => {
       const statA = seasonStats.find(s => s.id === a.id);
       const statB = seasonStats.find(s => s.id === b.id);
-      const avgA = statA?.gameCount > 0 ? statA.avg : (seasonConfig.battingTarget || 6.5);
-      const avgB = statB?.gameCount > 0 ? statB.avg : (seasonConfig.battingTarget || 6.5);
-      
-      // Randomize if exactly the same average (like first game of the season)
-      if (avgA === avgB) return Math.random() - 0.5;
-      return avgA - avgB;
+      // Players with no history are treated as if at the target (neutral priority).
+      const avgA = statA?.gameCount > 0 ? statA.avg : target;
+      const avgB = statB?.gameCount > 0 ? statB.avg : target;
+
+      const devA = avgA - target; // positive = batting too late, negative = batting too early
+      const devB = avgB - target;
+
+      // Small random noise prevents rigid lock-in for players already near the target.
+      const noiseA = (Math.random() - 0.5) * 0.2;
+      const noiseB = (Math.random() - 0.5) * 0.2;
+
+      // Sort DESCENDING by deviation: highest (too late) → slot 1; lowest (too early) → slot N
+      return (devB + noiseB) - (devA + noiseA);
     });
 
     const newOrder = {};

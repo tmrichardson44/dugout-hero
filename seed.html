@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lineup Hero — Seed Test Data</title>
+  <style>
+    body { font-family: monospace; background: #0f172a; color: #94a3b8; padding: 2rem; max-width: 700px; margin: auto; }
+    h1 { color: #10b981; font-size: 1.4rem; margin-bottom: 0.25rem; }
+    p { color: #64748b; margin-bottom: 1.5rem; font-size: 0.85rem; }
+    label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 0.3rem; margin-top: 1rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    input { width: 100%; box-sizing: border-box; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 0.6rem 1rem; color: #e2e8f0; font-size: 0.9rem; outline: none; }
+    button { margin-top: 1.5rem; background: #10b981; color: white; font-weight: 900; border: none; padding: 0.8rem 2rem; border-radius: 12px; cursor: pointer; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; width: 100%; }
+    button:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    #log { margin-top: 1.5rem; background: #1e293b; border-radius: 12px; padding: 1rem; font-size: 0.8rem; min-height: 80px; }
+    .ok  { color: #10b981; }
+    .err { color: #f43f5e; }
+    .info { color: #60a5fa; }
+  </style>
+</head>
+<body>
+  <h1>⚾ Lineup Hero — Seed Test Data</h1>
+  <p>Writes 10 players and 10 games into team <strong id="tid-display"></strong>. Run once, then delete this file.</p>
+
+  <label>Email</label>
+  <input id="email" type="email" placeholder="your@email.com" />
+
+  <label>Password</label>
+  <input id="password" type="password" placeholder="••••••••" />
+
+  <button id="btn" onclick="runSeed()">Seed Data →</button>
+  <div id="log"><span class="info">Ready. Fill in credentials and click Seed Data.</span></div>
+
+  <!-- Firebase v9 compat CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const TEAM_ID = "oukDgleGdUKnvJr9rZby";
+    document.getElementById("tid-display").textContent = TEAM_ID;
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4SqFZTr-4C9xRhJI684fXEl8nSrB-e90",
+      authDomain: "dugouthero-27584.firebaseapp.com",
+      projectId: "dugouthero-27584",
+      storageBucket: "dugouthero-27584.firebasestorage.app",
+      messagingSenderId: "476431764415",
+      appId: "1:476431764415:web:dce540fc1fc079d96f6f0a"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db   = firebase.firestore();
+    const auth = firebase.auth();
+
+    const log = (msg, cls = '') => {
+      const logEl = document.getElementById('log');
+      logEl.innerHTML += `<div class="${cls}">${msg}</div>`;
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    const PLAYERS = [
+      { id: 1,  name: "Marcus Rivera",   number: "3",  throws: "R", bats: "R", willPitch: true,  willCatch: false },
+      { id: 2,  name: "Dylan Torres",    number: "7",  throws: "R", bats: "L", willPitch: true,  willCatch: false },
+      { id: 3,  name: "Ethan Brooks",    number: "12", throws: "L", bats: "L", willPitch: true,  willCatch: false },
+      { id: 4,  name: "Jake Sullivan",   number: "22", throws: "R", bats: "R", willPitch: false, willCatch: true  },
+      { id: 5,  name: "Noah Campbell",   number: "9",  throws: "R", bats: "R", willPitch: false, willCatch: true  },
+      { id: 6,  name: "Owen Mitchell",   number: "15", throws: "R", bats: "S", willPitch: false, willCatch: false },
+      { id: 7,  name: "Liam Peterson",   number: "4",  throws: "R", bats: "R", willPitch: false, willCatch: false },
+      { id: 8,  name: "Aiden Walsh",     number: "18", throws: "L", bats: "L", willPitch: false, willCatch: false },
+      { id: 9,  name: "Carter Hughes",   number: "6",  throws: "R", bats: "R", willPitch: false, willCatch: false },
+      { id: 10, name: "Finn Gallagher",  number: "11", throws: "R", bats: "L", willPitch: false, willCatch: false },
+    ];
+
+    const GAMES = [
+      { opponent: "Red Sox",    date: "Apr 5",  time: "10:00 AM", location: "Field 1",  isHome: true  },
+      { opponent: "Yankees",    date: "Apr 12", time: "12:00 PM", location: "Field 2",  isHome: false },
+      { opponent: "Cubs",       date: "Apr 19", time: "10:00 AM", location: "Field 1",  isHome: true  },
+      { opponent: "Dodgers",    date: "Apr 26", time: "1:00 PM",  location: "Field 3",  isHome: false },
+      { opponent: "Braves",     date: "May 3",  time: "10:00 AM", location: "Field 1",  isHome: true  },
+      { opponent: "Mets",       date: "May 10", time: "11:00 AM", location: "Field 4",  isHome: false },
+      { opponent: "Cardinals",  date: "May 17", time: "10:00 AM", location: "Field 1",  isHome: true  },
+      { opponent: "Phillies",   date: "May 24", time: "12:00 PM", location: "Field 2",  isHome: true  },
+      { opponent: "Giants",     date: "May 31", time: "10:00 AM", location: "Field 5",  isHome: false },
+      { opponent: "Astros",     date: "Jun 7",  time: "1:00 PM",  location: "Field 1",  isHome: true  },
+    ];
+
+    async function runSeed() {
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('btn');
+
+      if (!email || !password) { alert('Please enter email and password.'); return; }
+
+      btn.disabled = true;
+      document.getElementById('log').innerHTML = '';
+      log('🔐 Signing in...', 'info');
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        log('✅ Signed in successfully', 'ok');
+      } catch (err) {
+        log(`❌ Auth failed: ${err.message}`, 'err');
+        btn.disabled = false;
+        return;
+      }
+
+      // --- Write Players ---
+      log('', '');
+      log('📋 Writing 10 players...', 'info');
+      for (const p of PLAYERS) {
+        try {
+          await db.collection('saas_data').doc('v1').collection('players').add({ ...p, teamId: TEAM_ID });
+          log(`  ✅ Player added: #${p.number} ${p.name}`, 'ok');
+        } catch (err) {
+          log(`  ❌ Failed: ${p.name} — ${err.message}`, 'err');
+        }
+      }
+
+      // --- Write Games ---
+      log('', '');
+      log('🗓️ Writing 10 games...', 'info');
+      for (const g of GAMES) {
+        try {
+          await db.collection('saas_data').doc('v1').collection('games').add({
+            ...g,
+            id: Date.now() + Math.floor(Math.random() * 10000),
+            teamId: TEAM_ID,
+            absentPlayerIds: [],
+            battingOrder: {},
+            field: {}
+          });
+          log(`  ✅ Game added: vs ${g.opponent} (${g.date})`, 'ok');
+        } catch (err) {
+          log(`  ❌ Failed: vs ${g.opponent} — ${err.message}`, 'err');
+        }
+      }
+
+      log('', '');
+      log('🎉 Done! Open Lineup Hero and check your team.', 'ok');
+      btn.textContent = '✅ Seeded!';
+    }
+  </script>
+</body>
+</html>
