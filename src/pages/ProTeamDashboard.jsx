@@ -30,6 +30,7 @@ export default function ProTeamDashboard() {
   const [seasonConfig, setSeasonConfig] = useState(INITIAL_CONFIG);
   const [teamDoc, setTeamDoc] = useState(null);
   const [allTeams, setAllTeams] = useState([]);
+  const [availableLeagues, setAvailableLeagues] = useState([]);
   const [showTeamSwitcher, setShowTeamSwitcher] = useState(false);
 
   // 1. Verify Access & Load Team
@@ -51,8 +52,8 @@ export default function ProTeamDashboard() {
              return;
           }
           setTeamDoc({ id: docSnap.id, ...data });
-          if(data.seasonSettings) setSeasonConfig({...data.seasonSettings, program: data.program});
-          else setSeasonConfig({ ...INITIAL_CONFIG, teamName: data.name, program: data.program });
+          if(data.seasonSettings) setSeasonConfig({...data.seasonSettings, program: data.program, leagueId: data.leagueId || ''});
+          else setSeasonConfig({ ...INITIAL_CONFIG, teamName: data.name, program: data.program, leagueId: data.leagueId || '' });
         } else {
           alert("Team not found.");
           navigate('/pro/dashboard');
@@ -74,6 +75,11 @@ export default function ProTeamDashboard() {
 
     fetchTeam();
     fetchAllTeams();
+
+    // Fetch leagues this user admins so the settings can offer a league picker
+    getDocs(query(collection(db, SAAS_ROOT, SAAS_VERSION, 'leagues'), where('adminUid', '==', currentUser.uid)))
+      .then(snap => setAvailableLeagues(snap.docs.map(d => ({ id: d.id, ...d.data() }))))
+      .catch(console.error);
   }, [currentUser, teamId, navigate]);
 
   // 2. Data Listeners for this specific Team
@@ -131,7 +137,7 @@ export default function ProTeamDashboard() {
   };
 
   const handleUpdateSeasonConfig = async (newConfig) => {
-    const { program, ...restConfig } = newConfig;
+    const { program, leagueId, ...restConfig } = newConfig;
     const newTeamName = restConfig.teamName || teamDoc.name;
     const updatePayload = { seasonSettings: restConfig };
     
@@ -141,6 +147,11 @@ export default function ProTeamDashboard() {
     
     if (program !== undefined && program !== teamDoc.program) {
       updatePayload.program = program;
+    }
+
+    // leagueId — save to the team doc directly (not inside seasonSettings)
+    if (leagueId !== undefined && leagueId !== (teamDoc.leagueId || '')) {
+      updatePayload.leagueId = leagueId || null;
     }
 
     await updateDoc(doc(db, SAAS_ROOT, SAAS_VERSION, 'teams', teamId), updatePayload);
@@ -195,6 +206,7 @@ export default function ProTeamDashboard() {
       onUpdateGame={handleUpdateGame}
       onDeleteGame={handleDeleteGame}
       onUpdateSeasonConfig={handleUpdateSeasonConfig}
+      availableLeagues={availableLeagues}
       HeaderBadge={ProBadge}
     />
   );

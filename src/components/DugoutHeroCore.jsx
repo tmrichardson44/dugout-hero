@@ -111,7 +111,7 @@ function PrintView({ selectedGame, players, seasonConfig, inline = false }) {
   );
 }
 
-function SeasonSettingsView({ seasonConfig, onSave }) {
+function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [] }) {
   const [draft, setDraft] = useState(seasonConfig);
   const [isSaved, setIsSaved] = useState(false);
   
@@ -147,6 +147,22 @@ function SeasonSettingsView({ seasonConfig, onSave }) {
                  <option disabled value="">More programs coming soon...</option>
               </select>
             </div>
+
+            {availableLeagues.length > 0 && (
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">League</label>
+                <select
+                  className="w-full bg-slate-50 border border-slate-200 rounded-[20px] px-6 py-4 font-black text-slate-700 outline-none focus:bg-white focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                  value={draft.leagueId || ''}
+                  onChange={(e) => setDraft({...draft, leagueId: e.target.value})}
+                >
+                  <option value="">— Not in a League —</option>
+                  {availableLeagues.map(l => (
+                    <option key={l.id} value={l.id}>{l.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="bg-slate-50 p-6 rounded-[32px] space-y-6">
@@ -333,6 +349,7 @@ export default function DugoutHeroCore({
   games = [],
   seasonConfig = {},
   isLoadingData = false,
+  availableLeagues = [],
   onAddPlayer,
   onEditPlayer,
   onDeletePlayer,
@@ -748,7 +765,7 @@ export default function DugoutHeroCore({
              </div>
           )}
 
-          {activeTab === 'settings' && <SeasonSettingsView seasonConfig={seasonConfig} onSave={onUpdateSeasonConfig} />}
+          {activeTab === 'settings' && <SeasonSettingsView seasonConfig={seasonConfig} onSave={onUpdateSeasonConfig} availableLeagues={availableLeagues} />}
 
           {activeTab === 'team' && <TeamView players={players} onAddPlayer={onAddPlayer} onEditPlayer={onEditPlayer} onDeletePlayer={onDeletePlayer} />}
         </main>
