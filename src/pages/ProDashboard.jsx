@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Users, LogOut, ShieldAlert, Plus, X } from 'lucide-react';
+import { Users, LogOut, ShieldAlert, Plus, X, Trophy, ChevronRight } from 'lucide-react';
 
 export default function ProDashboard() {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
+  const [leagues, setLeagues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCreatingTeam, setIsCreatingTeam] = useState(false);
+  const [isCreatingLeague, setIsCreatingLeague] = useState(false);
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamProgram, setNewTeamProgram] = useState('Hopkinton Little League');
+  const [newLeagueName, setNewLeagueName] = useState('');
+  const [newLeagueProgram, setNewLeagueProgram] = useState('Hopkinton Little League');
 
   useEffect(() => {
     if (!currentUser) {
@@ -20,28 +24,26 @@ export default function ProDashboard() {
       return;
     }
 
-    async function fetchTeams() {
+    async function fetchData() {
       try {
-        const q = query(
-          collection(db, 'saas_data', 'v1', 'teams'), 
-          where('managerUid', '==', currentUser.uid)
-        );
-        const snapshot = await getDocs(q);
-        const fetchedTeams = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setTeams(fetchedTeams);
+        const [teamsSnap, leaguesSnap] = await Promise.all([
+          getDocs(query(collection(db, 'saas_data', 'v1', 'teams'), where('managerUid', '==', currentUser.uid))),
+          getDocs(query(collection(db, 'saas_data', 'v1', 'leagues'), where('adminUid', '==', currentUser.uid)))
+        ]);
+        setTeams(teamsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setLeagues(leaguesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       } catch (err) {
-        console.error("Error fetching teams:", err);
+        console.error('Error fetching data:', err);
       }
       setLoading(false);
     }
 
-    fetchTeams();
+    fetchData();
   }, [currentUser, navigate]);
 
   async function handleCreateTeam(e) {
     if (e) e.preventDefault();
     if (!newTeamName.trim()) return;
-
     try {
       const newTeamRef = await addDoc(collection(db, 'saas_data', 'v1', 'teams'), {
         name: newTeamName.trim(),
@@ -53,7 +55,25 @@ export default function ProDashboard() {
       setIsCreatingTeam(false);
       setNewTeamName('');
     } catch (err) {
-      alert("Failed to create team: " + err.message);
+      alert('Failed to create team: ' + err.message);
+    }
+  }
+
+  async function handleCreateLeague(e) {
+    if (e) e.preventDefault();
+    if (!newLeagueName.trim()) return;
+    try {
+      const ref = await addDoc(collection(db, 'saas_data', 'v1', 'leagues'), {
+        name: newLeagueName.trim(),
+        program: newLeagueProgram,
+        adminUid: currentUser.uid,
+        createdAt: serverTimestamp()
+      });
+      setLeagues([...leagues, { id: ref.id, name: newLeagueName.trim(), program: newLeagueProgram, adminUid: currentUser.uid }]);
+      setIsCreatingLeague(false);
+      setNewLeagueName('');
+    } catch (err) {
+      alert('Failed to create league: ' + err.message);
     }
   }
 
@@ -133,6 +153,47 @@ export default function ProDashboard() {
           </div>
         )}
 
+        {/* ── My Leagues ── */}
+        <div>
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">My Leagues</h2>
+              <p className="text-slate-400 font-bold text-sm">Manage leagues and delegate to coaches.</p>
+            </div>
+            <button onClick={() => setIsCreatingLeague(true)} className="bg-blue-600 text-white px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition flex items-center gap-2 shadow-lg shadow-blue-200">
+              <Plus className="w-4 h-4" /> New League
+            </button>
+          </div>
+
+          {leagues.length === 0 ? (
+            <div className="bg-white rounded-[32px] p-10 text-center border border-slate-200 shadow-sm">
+              <Trophy className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+              <h3 className="text-lg font-black text-slate-700 mb-1">No Leagues Yet</h3>
+              <p className="text-slate-400 font-bold text-sm mb-4">Create a league to manage multiple teams and coaches.</p>
+              <button onClick={() => setIsCreatingLeague(true)} className="bg-blue-100 text-blue-700 px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-200 transition">
+                Create League
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {leagues.map(league => (
+                <Link key={league.id} to={`/pro/league/${league.id}`} className="bg-white p-6 rounded-[24px] border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all group block">
+                  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Trophy className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-black text-xl text-slate-800 uppercase tracking-tighter mb-1">{league.name}</h3>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">{league.program || 'Independent'}</p>
+                  <div className="flex items-center gap-1 text-blue-500 mt-4 pt-4 border-t border-slate-50">
+                    <ChevronRight className="w-3 h-3" />
+                    <p className="text-[10px] font-black uppercase tracking-widest">Open League Dashboard</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ── My Teams ── */}
         <div>
           <div className="flex justify-between items-end mb-6">
             <div>
@@ -169,6 +230,50 @@ export default function ProDashboard() {
           )}
         </div>
       </main>
+
+      {/* Create League Modal */}
+      {isCreatingLeague && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[32px] p-8 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">New League</h3>
+              <button onClick={() => { setIsCreatingLeague(false); setNewLeagueName(''); }} className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <form onSubmit={handleCreateLeague} className="space-y-6">
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">League Name</label>
+                <input
+                  type="text" autoFocus
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500 transition-all uppercase placeholder:normal-case"
+                  placeholder="e.g. Hopkinton Spring League"
+                  value={newLeagueName}
+                  onChange={e => setNewLeagueName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Program</label>
+                <select
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                  value={newLeagueProgram}
+                  onChange={e => setNewLeagueProgram(e.target.value)}
+                >
+                  <option value="Hopkinton Little League">Hopkinton Little League</option>
+                  <option disabled value="">More programs coming soon...</option>
+                </select>
+              </div>
+              <button
+                type="submit"
+                disabled={!newLeagueName.trim()}
+                className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-200 uppercase tracking-widest hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:shadow-none"
+              >
+                Create League
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

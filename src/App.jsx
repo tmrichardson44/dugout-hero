@@ -10,6 +10,7 @@ import ProLogin from './pages/ProLogin';
 import ProDashboard from './pages/ProDashboard';
 import ProTeamDashboard from './pages/ProTeamDashboard';
 import ProProfile from './pages/ProProfile';
+import ProLeagueDashboard from './pages/ProLeagueDashboard';
 
 export default function App() {
   return (
@@ -52,6 +53,13 @@ export default function App() {
           <Route path="/pro/team/:teamId" element={
              <ProtectedRoute>
                 <ProTeamDashboard />
+             </ProtectedRoute>
+          } />
+
+          {/* League Admin Dashboard Route */}
+          <Route path="/pro/league/:leagueId" element={
+             <ProtectedRoute>
+                <ProLeagueDashboard />
              </ProtectedRoute>
           } />
           
