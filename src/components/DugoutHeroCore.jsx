@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { 
   Users, ClipboardList, BarChart3, ChevronRight, ChevronLeft, 
   Settings as SettingsIcon, Plus, X, Wand2, 
@@ -123,7 +123,7 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
 
   return (
     <div className="p-4 space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-8">
+      <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-8">
         <div className="flex items-center justify-between border-b border-slate-50 pb-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center"><SettingsIcon className="w-6 h-6 text-emerald-600" /></div>
@@ -136,12 +136,12 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Team Name</label>
-              <input className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all uppercase placeholder:normal-case" placeholder="Team Name" value={draft.teamName || ''} onChange={(e) => setDraft({...draft, teamName: e.target.value})} />
+              <input className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all uppercase placeholder:normal-case" placeholder="Team Name" value={draft.teamName || ''} onChange={(e) => setDraft({...draft, teamName: e.target.value})} />
             </div>
             
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Legacy Program</label>
-              <select className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.program || 'Independent'} onChange={(e) => setDraft({...draft, program: e.target.value})}>
+              <select className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.program || 'Independent'} onChange={(e) => setDraft({...draft, program: e.target.value})}>
                  <option value="Independent">Independent (No Program/League)</option>
                  <option value="Hopkinton Little League">Hopkinton Little League</option>
                  <option disabled value="">More programs coming soon...</option>
@@ -150,7 +150,7 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Season</label>
-              <select className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.season || 'Spring'} onChange={(e) => setDraft({...draft, season: e.target.value})}>
+              <select className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.season || 'Spring'} onChange={(e) => setDraft({...draft, season: e.target.value})}>
                  <option value="Spring">Spring</option>
                  <option value="Summer">Summer</option>
                  <option value="Fall">Fall</option>
@@ -160,7 +160,7 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Year</label>
-              <select className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.year || '2026'} onChange={(e) => setDraft({...draft, year: e.target.value})}>
+              <select className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.year || '2026'} onChange={(e) => setDraft({...draft, year: e.target.value})}>
                  {Array.from({length: 20}).map((_, i) => {
                     const y = (2026 + i).toString();
                     return <option key={y} value={y}>{y}</option>;
@@ -170,19 +170,19 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Coach's Name</label>
-              <input className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={coachName || ''} readOnly />
+              <input className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={coachName || ''} readOnly />
             </div>
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Division</label>
-              <input className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={divisionName || 'Unassigned'} readOnly />
+              <input className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={divisionName || 'Unassigned'} readOnly />
             </div>
 
             {availableLeagues.length > 0 && (
               <div className="space-y-2 md:col-span-2">
                 <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">League (Reassign)</label>
                 <select
-                  className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-blue-500 transition-all appearance-none cursor-pointer"
                   value={draft.leagueId || ''}
                   onChange={(e) => setDraft({...draft, leagueId: e.target.value})}
                 >
@@ -239,7 +239,7 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
                 <button key={pos.id} onClick={() => {
                   const next = active ? (draft.enabledPositions || []).filter(id => id !== pos.id) : [...(draft.enabledPositions || []), pos.id];
                   setDraft({...draft, enabledPositions: next});
-                }} className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all ${active ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white/40  border-slate-100 text-slate-300 opacity-60'}`}>
+                }} className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all ${active ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white border-slate-100 text-slate-300 opacity-60'}`}>
                   <div className="font-bold text-xs">{pos.id}</div>
                   {active ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border-2 border-slate-200" />}
                 </button>
@@ -311,25 +311,25 @@ function TeamView({ players, onAddPlayer, onEditPlayer, onDeletePlayer }) {
             <div className="grid grid-cols-4 gap-4">
                <div className="col-span-3 space-y-2">
                  <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">Name</label>
-                 <input className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 uppercase" placeholder="Player Name" value={newPlayer.name} onChange={(e) => setNewPlayer({...newPlayer, name: e.target.value})} />
+                 <input className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 uppercase" placeholder="Player Name" value={newPlayer.name} onChange={(e) => setNewPlayer({...newPlayer, name: e.target.value})} />
                </div>
                <div className="col-span-1 space-y-2">
                  <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">#</label>
-                 <input type="number" className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 text-center" placeholder="00" value={newPlayer.number} onChange={(e) => setNewPlayer({...newPlayer, number: e.target.value})} />
+                 <input type="number" className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 text-center" placeholder="00" value={newPlayer.number} onChange={(e) => setNewPlayer({...newPlayer, number: e.target.value})} />
                </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="space-y-2">
                  <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">Throws</label>
-                 <select className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 appearance-none" value={newPlayer.throws} onChange={(e) => setNewPlayer({...newPlayer, throws: e.target.value})}>
+                 <select className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 appearance-none" value={newPlayer.throws} onChange={(e) => setNewPlayer({...newPlayer, throws: e.target.value})}>
                     <option value="R">Right</option>
                     <option value="L">Left</option>
                  </select>
               </div>
               <div className="space-y-2">
                  <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">Bats</label>
-                 <select className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 appearance-none" value={newPlayer.bats} onChange={(e) => setNewPlayer({...newPlayer, bats: e.target.value})}>
+                 <select className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 appearance-none" value={newPlayer.bats} onChange={(e) => setNewPlayer({...newPlayer, bats: e.target.value})}>
                     <option value="R">Right</option>
                     <option value="L">Left</option>
                     <option value="S">Switch</option>
@@ -338,8 +338,8 @@ function TeamView({ players, onAddPlayer, onEditPlayer, onDeletePlayer }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
-               <button onClick={() => setNewPlayer({...newPlayer, willPitch: !newPlayer.willPitch})} className={`py-3 rounded-lg font-bold text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willPitch ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white/40  border-slate-100 text-slate-400'}`}>Pitcher</button>
-               <button onClick={() => setNewPlayer({...newPlayer, willCatch: !newPlayer.willCatch})} className={`py-3 rounded-lg font-bold text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willCatch ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white/40  border-slate-100 text-slate-400'}`}>Catcher</button>
+               <button onClick={() => setNewPlayer({...newPlayer, willPitch: !newPlayer.willPitch})} className={`py-3 rounded-lg font-bold text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willPitch ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white border-slate-100 text-slate-400'}`}>Pitcher</button>
+               <button onClick={() => setNewPlayer({...newPlayer, willCatch: !newPlayer.willCatch})} className={`py-3 rounded-lg font-bold text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willCatch ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white border-slate-100 text-slate-400'}`}>Catcher</button>
             </div>
 
             <div className="flex gap-4 pt-4">
@@ -351,7 +351,7 @@ function TeamView({ players, onAddPlayer, onEditPlayer, onDeletePlayer }) {
 
        <div className="space-y-3">
          {players.map(p => (
-           <div key={p.id} className="bg-white border border-slate-200  p-5 rounded-lg border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 flex items-center justify-between group">
+           <div key={p.id} className="bg-white border border-slate-200  p-5 rounded-lg border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 flex items-center justify-between group">
              <div className="flex items-center gap-4">
                <div className="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center font-bold text-emerald-600 border border-emerald-100 text-lg shadow-inner">{p.number}</div>
                <div>
@@ -512,7 +512,7 @@ export default function DugoutHeroCore({
 
         <main className="max-w-3xl mx-auto p-4">
           {activeTab === 'home' && (
-            <div className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+            <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-xl font-bold text-slate-900">Batting Order Average</h2>
                 <div className="bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase">Target: {((seasonConfig.rosterSize || 12) / 2) - 1} - {((seasonConfig.rosterSize || 12) / 2) + 0.75}</div>
@@ -547,7 +547,7 @@ export default function DugoutHeroCore({
                 onAddGame(newGame);
               }} className="w-full bg-blue-600 hover:bg-blue-700 transition-colors hover:from-emerald-400  text-white font-bold py-3 rounded-lg shadow-lg shadow-sm hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-2 uppercase text-sm tracking-widest active:scale-95 transition-all"><Plus /> New Game</button>
               {games.map((g, index) => (
-                <button key={g.id} onClick={() => setSelectedGameId(g.id)} className="w-full bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 flex items-center justify-between hover:border-emerald-400 transition-all text-left group">
+                <button key={g.id} onClick={() => setSelectedGameId(g.id)} className="w-full bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 flex items-center justify-between hover:border-emerald-400 transition-all text-left group">
                   <div>
                      <p className="text-[10px] font-bold text-emerald-600 tracking-wide font-medium mb-1 flex items-center gap-2">
                        <span>Game {index + 1}</span>
@@ -571,7 +571,7 @@ export default function DugoutHeroCore({
 
           {selectedGameId && (
              <div className="space-y-4">
-                <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-4 animate-in slide-in-from-top-4 duration-500">
+                <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 space-y-4 animate-in slide-in-from-top-4 duration-500">
                   <div className="flex items-center justify-between border-b border-slate-50 pb-4">
                     <div className="flex items-center gap-4">
                        <button onClick={() => onUpdateGame(selectedGame.firebaseId, { isHome: !selectedGame.isHome })} className={`px-4 py-2 rounded-xl text-[10px] font-bold tracking-wide transition-all ${selectedGame.isHome ? 'bg-emerald-50 text-emerald-600' : 'bg-white/40  text-slate-400'}`}>
@@ -610,14 +610,14 @@ export default function DugoutHeroCore({
                   </div>
                 </div>
 
-                <div className="flex gap-2 p-2 bg-white border border-slate-200  rounded-xl border border-slate-100 shadow-sm">
+                <div className="flex gap-2 p-2 bg-white border border-slate-200 rounded-xl border border-slate-100 shadow-sm">
                    {['matrix', 'order', 'preview'].map(t => (
                      <button key={t} onClick={() => setGameSubTab(t)} className={`flex-1 py-3 rounded-lg font-bold text-[10px] tracking-wide font-medium transition-all ${gameSubTab === t ? 'bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 shadow-lg' : 'text-slate-400 bg-white/40 '}`}>{t === 'matrix' ? 'Fielding' : t === 'order' ? 'Batting' : 'Sheet'}</button>
                    ))}
                 </div>
 
                 {gameSubTab === 'matrix' && (
-                  <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-6 animate-in slide-in-from-left-4 duration-300">
+                  <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 space-y-6 animate-in slide-in-from-left-4 duration-300">
                     <div className="flex items-center justify-between">
                        <div>
                           <h3 className="text-xl font-bold text-slate-900">Fielding Rotation</h3>
@@ -716,7 +716,7 @@ export default function DugoutHeroCore({
                 )}
 
                 {gameSubTab === 'order' && (
-                  <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-6 animate-in slide-in-from-right-4 duration-300">
+                  <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 space-y-6 animate-in slide-in-from-right-4 duration-300">
                     <div className="flex items-center justify-between">
                        <div>
                           <h3 className="text-xl font-bold text-slate-900">Batting Order</h3>
@@ -756,7 +756,7 @@ export default function DugoutHeroCore({
                                
                                onUpdateGame(selectedGame.firebaseId, { battingOrder: newOrder });
                              }}
-                             className="flex gap-4 items-center bg-white/40  p-3 rounded-lg border border-slate-100 cursor-move hover:border-emerald-300 hover:shadow-md transition-all group"
+                             className="flex gap-4 items-center bg-white/40  p-3 rounded-lg border border-slate-100 cursor-move hover:border-green-300 hover:shadow-md transition-all group"
                            >
                               <GripVertical className="w-5 h-5 text-slate-300 group-hover:text-emerald-500 transition-colors" />
                               <div className="w-6 text-center font-bold text-slate-300 text-xl">{idx + 1}</div>

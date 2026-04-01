@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -64,7 +64,7 @@ export default function ProLogin() {
                 <input
                   type="text"
                   required
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                 />
@@ -78,7 +78,7 @@ export default function ProLogin() {
               <input
                 type="email"
                 required
-                className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -91,7 +91,7 @@ export default function ProLogin() {
               <input
                 type="password"
                 required
-                className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

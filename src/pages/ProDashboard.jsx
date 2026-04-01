@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -258,8 +258,8 @@ export default function ProDashboard() {
   return (
     <div className="min-h-screen bg-white/40  relative">
       {isCreatingTeam && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[100] flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200  rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">New Team</h3>
               <button 
@@ -275,7 +275,7 @@ export default function ProDashboard() {
                 <input
                   type="text"
                   autoFocus
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all uppercase placeholder:normal-case"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all uppercase placeholder:normal-case"
                   placeholder="e.g. The Sandlot Legends"
                   value={newTeamName}
                   onChange={e => setNewTeamName(e.target.value)}
@@ -288,7 +288,7 @@ export default function ProDashboard() {
                   <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">League Context</label>
                   <select
                     disabled={!!myOnlyDivision || (!!myOnlyLeague && !isSuperAdmin())}
-                    className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all text-sm"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all text-sm"
                     value={newTeamLeagueId}
                     onChange={e => {
                       setNewTeamLeagueId(e.target.value);
@@ -306,7 +306,7 @@ export default function ProDashboard() {
                   <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">Division Context</label>
                   <select
                     disabled={!!myOnlyDivision && !isSuperAdmin()}
-                    className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all text-sm"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all text-sm"
                     value={newTeamDivisionId}
                     onChange={e => setNewTeamDivisionId(e.target.value)}
                   >
@@ -321,7 +321,7 @@ export default function ProDashboard() {
               <div>
                 <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">Program</label>
                 <select
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all appearance-none cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all appearance-none cursor-pointer"
                   value={newTeamProgram}
                   onChange={e => setNewTeamProgram(e.target.value)}
                 >
@@ -332,7 +332,7 @@ export default function ProDashboard() {
               <button
                 type="submit"
                 disabled={!newTeamName.trim()}
-                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 font-bold py-3 rounded-lg shadow-lg shadow-sm tracking-wide font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:shadow-none"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 transition-colors text-white shadow-md shadow-emerald-200 font-bold py-3 rounded-lg tracking-wide transition-all duration-300 disabled:opacity-50 disabled:shadow-none"
               >
                 Create Team
               </button>
@@ -341,19 +341,20 @@ export default function ProDashboard() {
         </div>
       )}
 
-      <nav className="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg relative z-10">
-        <div className="font-bold tracking-widest uppercase">Lineup Hero <span className="text-emerald-400">PRO</span></div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono bg-blue-700 px-2 py-1 rounded text-blue-200 mr-2">UID: {currentUser?.uid}</span>
-          <span className="text-xs font-bold text-blue-300 hidden sm:inline-block mr-2">{currentUser?.email}</span>
-          <Link to="/pro/profile" className="bg-blue-700 text-white text-[10px] font-bold px-4 py-2 rounded-xl hover:bg-blue-800 transition tracking-wide font-medium">
-             Profile
+      <nav className="bg-green-800 text-white px-6 py-4 flex justify-between items-center shadow-md relative z-10">
+        <div className="font-bold tracking-widest uppercase text-white">Dugout Hero <span className="text-green-300">PRO</span></div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold text-green-300 hidden sm:inline-block">{currentUser?.email}</span>
+          <Link to="/pro/profile" className="bg-green-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-green-600 transition tracking-wide">
+            Profile
           </Link>
-          <button onClick={logout} title="Log Out" className="p-2 hover:bg-blue-700 rounded-xl transition-colors"><LogOut className="w-5 h-5" /></button>
+          <button onClick={logout} title="Log Out" className="p-2 hover:bg-green-700 rounded-lg transition-colors">
+            <LogOut className="w-5 h-5" />
+          </button>
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto p-8 space-y-8">
+      <main className="max-w-5xl mx-auto p-8 space-y-10">
         {isSuperAdmin() && (
           <div className="bg-rose-50 border border-rose-200 rounded-xl p-6 flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-4 text-rose-700">
@@ -423,7 +424,7 @@ export default function ProDashboard() {
                     alert('Dev Setup Failed: ' + e.message);
                   }
                 }}
-                className="bg-slate-800 text-white px-4 py-3 rounded-xl font-mono text-[10px] hover:bg-slate-900 transition"
+                className="bg-green-800 text-white px-4 py-3 rounded-xl font-mono text-[10px] hover:bg-slate-900 transition"
               >
                 REBUILD_TEST_DATA
               </button>
@@ -441,7 +442,7 @@ export default function ProDashboard() {
                 <p className="text-slate-400 font-bold text-sm">Manage leagues, divisions and teams.</p>
               </div>
               {(isLeagueOwner || isSuperAdmin()) && (
-                <button onClick={() => setIsCreatingLeague(true)} className="bg-blue-600 text-white px-5 py-3 rounded-lg font-bold text-xs tracking-wide font-medium hover:bg-blue-700 transition flex items-center gap-2 shadow-lg shadow-blue-200">
+                <button onClick={() => setIsCreatingLeague(true)} className="bg-green-600 text-white px-5 py-3 rounded-lg font-bold text-xs tracking-wide hover:bg-green-700 transition flex items-center gap-2 shadow-sm shadow-green-200">
                   <Plus className="w-4 h-4" /> New League
                 </button>
               )}
@@ -452,16 +453,16 @@ export default function ProDashboard() {
                 <Trophy className="w-12 h-12 text-slate-200 mx-auto mb-3" />
                 <h3 className="text-lg font-bold text-slate-700 mb-1">No Leagues Yet</h3>
                 <p className="text-slate-400 font-bold text-sm mb-4">Create a league to manage multiple teams and coaches.</p>
-                <button onClick={() => setIsCreatingLeague(true)} className="bg-blue-100 text-blue-700 px-6 py-3 rounded-lg font-bold text-sm tracking-wide font-medium hover:bg-blue-200 transition">
+                <button onClick={() => setIsCreatingLeague(true)} className="bg-green-100 text-green-800 px-6 py-3 rounded-lg font-bold text-sm tracking-wide hover:bg-green-200 transition">
                   Create League
                 </button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {ownedLeagues.map(league => (
-                  <Link key={league.id} to={`/pro/league/${league.id}`} className="bg-white border border-slate-200 p-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 hover:shadow-lg hover:border-blue-300 group block">
+                  <Link key={league.id} to={`/pro/league/${league.id}`} className="bg-white border border-slate-200 p-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 hover:shadow-lg hover:border-amber-300 group block">
                     <div className="flex justify-between items-start mb-4">
-                      <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Trophy className="w-6 h-6" />
                       </div>
                       {/* Delete only for the actual owner */}
@@ -521,7 +522,7 @@ export default function ProDashboard() {
               {(isLeagueOwner || isDivisionAdmin || isSuperAdmin()) && (
                 <button 
                   onClick={() => setIsCreatingDivision(true)} 
-                  className="bg-slate-600 text-white px-5 py-3 rounded-lg font-bold text-xs tracking-wide font-medium hover:bg-slate-700 transition flex items-center gap-2 shadow-lg shadow-slate-200"
+                  className="bg-slate-700 text-white px-5 py-3 rounded-lg font-bold text-xs tracking-wide hover:bg-slate-800 transition flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" /> New Division
                 </button>
@@ -539,9 +540,9 @@ export default function ProDashboard() {
                 {ownedDivisions.map(division => {
                   const league = [...ownedLeagues, ...contextLeagues].find(l => l.id === division.leagueId);
                   return (
-                    <Link key={division.id} to={`/pro/division/${division.id}`} className="bg-white border border-slate-200 p-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 hover:shadow-lg hover:border-slate-300 group block">
+                    <Link key={division.id} to={`/pro/division/${division.id}`} className="bg-white border border-slate-200 p-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 hover:shadow-lg hover:border-slate-300 group block">
                       <div className="flex justify-between items-start mb-4">
-                        <div className="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                           <Layers className="w-6 h-6" />
                         </div>
                         <div className="flex flex-col items-end">
@@ -595,17 +596,17 @@ export default function ProDashboard() {
               <h2 className="text-2xl font-bold text-slate-800 uppercase tracking-tighter">My Teams</h2>
               <p className="text-slate-400 font-bold text-sm">Select a team to manage roster and games.</p>
             </div>
-            <button onClick={() => setIsCreatingTeam(true)} className="bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 px-5 py-3 rounded-lg font-bold text-xs tracking-wide font-medium hover:bg-emerald-700 transition flex items-center gap-2 shadow-lg shadow-sm">
+            <button onClick={() => setIsCreatingTeam(true)} className="bg-green-600 hover:bg-green-700 transition text-white px-5 py-3 rounded-lg font-bold text-xs tracking-wide flex items-center gap-2">
               <Plus className="w-4 h-4" /> New Team
             </button>
           </div>
 
           {teams.length === 0 ? (
-            <div className="bg-white border border-slate-200  rounded-xl p-12 text-center border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300">
+            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300">
               <Users className="w-16 h-16 text-slate-200 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-slate-700 mb-2">No Teams Yet</h3>
               <p className="text-slate-500 font-bold mb-6">Create your first team to start managing your season.</p>
-              <button onClick={() => setIsCreatingTeam(true)} className="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-lg font-bold text-sm tracking-wide font-medium hover:bg-emerald-200 transition">
+              <button onClick={() => setIsCreatingTeam(true)} className="bg-green-100 text-green-800 px-6 py-3 rounded-lg font-bold text-sm tracking-wide hover:bg-green-200 transition">
                 Create Team
               </button>
             </div>
@@ -618,9 +619,9 @@ export default function ProDashboard() {
                   const div = allDivisions.find(d => d.id === team.divisionId);
                   const league = allLeagues.find(l => l.id === team.leagueId);
                   return (
-                    <Link key={team.id} to={`/pro/team/${team.id}`} className="bg-white border border-slate-200 p-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 hover:shadow-lg hover:border-emerald-300 group block">
+                    <Link key={team.id} to={`/pro/team/${team.id}`} className="bg-white border border-slate-200 p-6 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 hover:shadow-lg hover:border-green-300 group block">
                       <div className="flex justify-between items-start mb-4">
-                        <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-green-100 text-green-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                           <Users className="w-6 h-6" />
                         </div>
                         <div className="flex flex-col items-end">

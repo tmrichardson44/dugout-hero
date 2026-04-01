@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { collection, query, where, getDocs, deleteDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
@@ -126,7 +126,7 @@ export default function ProProfile() {
       <main className="max-w-2xl mx-auto p-4 sm:p-8 space-y-8">
         
         {/* Core Profile Info */}
-        <section className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+        <section className="bg-white border border-slate-200 rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
            <div className="flex items-center gap-6 mb-6">
               <div className="w-20 h-20 rounded-full bg-blue-100 text-blue-600 font-bold text-3xl flex items-center justify-center uppercase shadow-inner">
                 {currentUser?.displayName?.[0] || currentUser?.email?.[0] || '?'}
@@ -141,7 +141,7 @@ export default function ProProfile() {
         </section>
 
         {/* My Teams List */}
-        <section className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-6">
+        <section className="bg-white border border-slate-200 rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
             <Users className="text-slate-400 w-6 h-6" />
             <h2 className="text-lg font-bold text-slate-800 tracking-wide font-medium">My Managed Teams</h2>
@@ -169,7 +169,7 @@ export default function ProProfile() {
 
 
         {/* Change Name */}
-        <section className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-6">
+        <section className="bg-white border border-slate-200 rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
             <UserCircle className="text-slate-400 w-6 h-6" />
             <h2 className="text-lg font-bold text-slate-800 tracking-wide font-medium">Edit Profile Name</h2>
@@ -184,7 +184,7 @@ export default function ProProfile() {
               <input 
                 type="text" 
                 required 
-                className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-blue-500 transition-all uppercase placeholder:normal-case"
+                className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-blue-500 transition-all uppercase placeholder:normal-case"
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
               />
@@ -201,7 +201,7 @@ export default function ProProfile() {
         </section>
 
         {/* Change Password */}
-        <section className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-6">
+        <section className="bg-white border border-slate-200 rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
             <KeySquare className="text-slate-400 w-6 h-6" />
             <h2 className="text-lg font-bold text-slate-800 tracking-wide font-medium">Change Password</h2>
@@ -216,7 +216,7 @@ export default function ProProfile() {
               <input 
                 type="password" 
                 required 
-                className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-blue-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-blue-500 transition-all"
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
               />
@@ -226,7 +226,7 @@ export default function ProProfile() {
               <input 
                 type="password" 
                 required 
-                className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-blue-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-blue-500 transition-all"
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
               />

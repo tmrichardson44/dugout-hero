@@ -96,7 +96,7 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
   };
 
   return (
-    <div className="bg-white border border-slate-200  rounded-[28px] border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 overflow-hidden group hover:shadow-lg hover:border-emerald-200 transition-all">
+    <div className="bg-white border border-slate-200 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 overflow-hidden group hover:shadow-lg hover:border-green-300 transition-all">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start justify-between mb-3">
@@ -184,7 +184,7 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
       <div className="px-6 pb-5 pt-3">
         <button
           onClick={() => onOpenLineup(team.id)}
-          className="w-full bg-white/40  hover:bg-emerald-50 hover:text-emerald-700 text-slate-500 font-bold text-[10px] tracking-wide font-medium py-3 rounded-lg border border-slate-100 hover:border-emerald-200 transition-all flex items-center justify-center gap-2"
+          className="w-full bg-white/40  hover:bg-emerald-50 hover:text-emerald-700 text-slate-500 font-bold text-[10px] tracking-wide font-medium py-3 rounded-lg border border-slate-100 hover:border-green-300 transition-all flex items-center justify-center gap-2"
         >
           <BarChart3 className="w-4 h-4" /> View Full Stats
         </button>
@@ -192,8 +192,8 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
 
       {/* Team settings modal (Coach + Division) */}
       {showCoachModal && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[200] flex items-center justify-center p-4" onClick={() => setShowCoachModal(false)}>
-          <div className="bg-white border border-slate-200  rounded-[28px] p-8 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-slate-900/60 z-[200] flex items-center justify-center p-4" onClick={() => setShowCoachModal(false)}>
+          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tighter">Team Settings</h3>
               <button onClick={() => setShowCoachModal(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors">
@@ -205,7 +205,7 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
               <div>
                 <label className="block text-[10px] font-bold text-slate-400 tracking-wide font-medium mb-2 uppercase">Assign Coach</label>
                 <select
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm mb-2"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm mb-2"
                   value={assignCoachMode === 'new' ? 'NEW' : selectedCoachUid}
                   onChange={e => {
                     if (e.target.value === 'NEW') setAssignCoachMode('new');
@@ -223,7 +223,7 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
                   <input
                     type="email"
                     autoFocus
-                    className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm"
                     placeholder="coach@example.com"
                     value={coachEmail}
                     onChange={e => setCoachEmail(e.target.value)}
@@ -234,7 +234,7 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
               <div>
                 <label className="block text-[10px] font-bold text-slate-400 tracking-wide font-medium mb-2 uppercase">Move to Division</label>
                 <select
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm"
                   value={team.divisionId || ''}
                   onChange={async (e) => {
                     await onAssignCoach(team.id, team.coachEmail, team.managerUid, team.coachName, e.target.value);
@@ -282,7 +282,7 @@ function TeamStatsModal({ team, players, games, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-slate-900/60  z-[200] flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white border border-slate-200  rounded-xl w-full max-w-lg shadow-lg animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+      <div className="bg-white border border-slate-200 rounded-xl w-full max-w-lg shadow-lg animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
         <div className="p-8 pb-4 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div>
             <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{team.name}</h2>
@@ -489,22 +489,22 @@ export default function ProLeagueDashboard() {
   const totalGames   = Object.values(teamData).reduce((s, d) => s + (d.games?.length   || 0), 0);
 
   return (
-    <div className="min-h-screen bg-white/40 ">
+    <div className="min-h-screen bg-stone-50">
       {/* Nav */}
-      <nav className="bg-blue-600 text-white p-4 flex items-center justify-between shadow-lg sticky top-0 z-50">
+      <nav className="bg-green-800 text-white px-6 py-4 flex items-center justify-between shadow-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <Link to="/pro/dashboard" className="p-2 hover:bg-blue-700 rounded-xl transition-colors text-blue-200 hover:text-white">
+          <Link to="/pro/dashboard" className="p-2 hover:bg-green-700 rounded-lg transition-colors text-green-300 hover:text-white">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
             <div className="font-bold tracking-widest uppercase text-sm leading-none">{league.name}</div>
-            <div className="text-blue-300 text-[10px] font-bold tracking-wide font-medium mt-0.5">League Admin Dashboard</div>
+            <div className="text-green-300 text-[10px] font-bold tracking-wide mt-0.5">League Dashboard</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAddTeam(true)}
-            className="bg-blue-700 hover:bg-blue-800 text-white text-[10px] font-bold px-4 py-2 rounded-xl transition-colors flex items-center gap-2 tracking-wide font-medium"
+            className="bg-green-700 hover:bg-green-600 text-white text-[10px] font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-2 tracking-wide"
           >
             <Plus className="w-3 h-3" /> Add Team
           </button>
@@ -520,9 +520,9 @@ export default function ProLeagueDashboard() {
             { icon: Trophy,    label: 'Total Players',  value: totalPlayers },
             { icon: TrendingUp,label: 'Total Games',    value: totalGames   },
           ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="bg-white border border-slate-200  rounded-lg p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex items-center gap-4">
-              <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
-                <Icon className="w-6 h-6 text-emerald-600" />
+            <div key={label} className="bg-white border border-slate-200 rounded-lg p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex items-center gap-4">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon className="w-6 h-6 text-green-700" />
               </div>
               <div>
                 <p className="text-3xl font-bold text-slate-900 leading-none">{value}</p>
@@ -541,7 +541,7 @@ export default function ProLeagueDashboard() {
         {divisions.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
             {divisions.map(div => (
-              <div key={div.id} className="bg-white border border-slate-200  p-5 rounded-lg border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 relative group overflow-hidden">
+              <div key={div.id} className="bg-white border border-slate-200  p-5 rounded-lg border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300 relative group overflow-hidden">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-white/40  text-slate-600 rounded-lg flex items-center justify-center"><Layers className="w-4 h-4" /></div>
@@ -573,21 +573,21 @@ export default function ProLeagueDashboard() {
           <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">All Teams</h2>
           
           <div className="flex gap-2">
-            <select value={filterDivision} onChange={e => setFilterDivision(e.target.value)} className="bg-white/40  border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
+            <select value={filterDivision} onChange={e => setFilterDivision(e.target.value)} className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
               <option value="All Divisions">All Divisions</option>
               {divisions.map(d => (
                 <option key={d.id} value={d.id}>{d.name}</option>
               ))}
               <option value="No Division">No Division</option>
             </select>
-            <select value={filterSeason} onChange={e => setFilterSeason(e.target.value)} className="bg-white/40  border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
+            <select value={filterSeason} onChange={e => setFilterSeason(e.target.value)} className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
               <option value="All Seasons">All Seasons</option>
               <option value="Spring">Spring</option>
               <option value="Summer">Summer</option>
               <option value="Fall">Fall</option>
               <option value="Winter">Winter</option>
             </select>
-            <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="bg-white/40  border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
+            <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
               <option value="All Years">All Years</option>
               {Array.from({length: 20}).map((_, i) => {
                  const y = (2026 + i).toString();
@@ -599,16 +599,16 @@ export default function ProLeagueDashboard() {
 
         {/* Teams grid */}
         {teams.length === 0 ? (
-          <div className="bg-white border border-slate-200  rounded-xl p-16 flex flex-col items-center justify-center border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300">
+          <div className="bg-white border border-slate-200 rounded-xl p-16 flex flex-col items-center justify-center border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all duration-300">
             <Users className="w-16 h-16 text-slate-200 mb-4" />
             <h3 className="text-xl font-bold text-slate-700 mb-2">No Teams Yet</h3>
             <p className="text-slate-400 font-bold mb-6">Add existing teams or create new ones for this league.</p>
-            <button onClick={() => setShowAddTeam(true)} className="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-lg font-bold text-sm tracking-wide font-medium hover:bg-emerald-200 transition flex items-center gap-2">
+            <button onClick={() => setShowAddTeam(true)} className="bg-green-100 text-green-800 px-6 py-3 rounded-lg font-bold text-sm tracking-wide hover:bg-green-200 transition flex items-center gap-2">
               <Plus className="w-4 h-4" /> Add Team
             </button>
           </div>
         ) : displayTeams.length === 0 ? (
-          <div className="bg-white/40  rounded-xl p-16 flex flex-col items-center justify-center border border-slate-200 border-dashed">
+          <div className="bg-white rounded-xl p-16 flex flex-col items-center justify-center border border-slate-200 border-dashed">
             <p className="text-slate-400 font-bold mb-2">No teams match `{filterSeason} {filterYear}`</p>
             <button onClick={() => { setFilterSeason('All Seasons'); setFilterYear('All Years'); }} className="text-blue-600 font-bold text-xs tracking-wide font-medium hover:underline">Clear Filters</button>
           </div>
@@ -634,8 +634,8 @@ export default function ProLeagueDashboard() {
 
       {/* Create Division Modal */}
       {isCreatingDivision && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[100] flex items-center justify-center p-4" onClick={() => setIsCreatingDivision(false)}>
-          <div className="bg-white border border-slate-200  rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4" onClick={() => setIsCreatingDivision(false)}>
+          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">New Division</h3>
               <button onClick={() => { setIsCreatingDivision(false); setNewDivisionName(''); }} className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors"><X className="w-4 h-4" /></button>
@@ -645,7 +645,7 @@ export default function ProLeagueDashboard() {
                 <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">Division Name</label>
                 <input
                   type="text" autoFocus
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-blue-500 transition-all uppercase placeholder:normal-case"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-blue-500 transition-all uppercase placeholder:normal-case"
                   placeholder="e.g. American League"
                   value={newDivisionName}
                   onChange={e => setNewDivisionName(e.target.value)}
@@ -654,7 +654,7 @@ export default function ProLeagueDashboard() {
               <button
                 type="submit"
                 disabled={!newDivisionName.trim()}
-                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-200 tracking-wide font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:shadow-none"
+                className="w-full bg-green-600 text-white font-bold py-3 rounded-xl shadow-sm shadow-green-100 tracking-wide hover:bg-green-700 transition-colors disabled:opacity-50 disabled:shadow-none"
               >
                 Create Division
               </button>
@@ -665,15 +665,15 @@ export default function ProLeagueDashboard() {
 
       {/* Add team modal */}
       {showAddTeam && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[100] flex items-center justify-center p-4" onClick={() => setShowAddTeam(false)}>
-          <div className="bg-white border border-slate-200  rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4" onClick={() => setShowAddTeam(false)}>
+          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">Add Team to League</h3>
               <button onClick={() => setShowAddTeam(false)} className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 transition-colors"><X className="w-4 h-4" /></button>
             </div>
 
             <input
-              className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all mb-4 text-sm"
+              className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all mb-4 text-sm"
               placeholder="Search your teams…"
               value={addTeamSearch}
               onChange={e => setAddTeamSearch(e.target.value)}
@@ -688,7 +688,7 @@ export default function ProLeagueDashboard() {
                   key={team.id}
                   onClick={() => handleAddExistingTeam(team)}
                   disabled={addingTeam}
-                  className="w-full flex items-center justify-between bg-white/40  hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 p-4 rounded-lg transition-all text-left"
+                  className="w-full flex items-center justify-between bg-white/40  hover:bg-emerald-50 hover:border-green-300 border border-slate-200 p-4 rounded-lg transition-all text-left"
                 >
                   <span className="font-bold text-slate-800 uppercase text-sm">{team.name}</span>
                   <ChevronRight className="w-4 h-4 text-slate-300" />
@@ -699,7 +699,7 @@ export default function ProLeagueDashboard() {
             <div className="border-t border-slate-100 pt-4">
               <button
                 onClick={handleCreateTeam}
-                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 font-bold py-3 rounded-lg text-xs tracking-wide font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-green-600 hover:bg-green-700 transition-colors text-white font-bold py-3 rounded-lg text-xs tracking-wide flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" /> Create Brand New Team
               </button>
@@ -710,8 +710,8 @@ export default function ProLeagueDashboard() {
 
       {/* Admin Assign Modal */}
       {isAdminModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[200] flex items-center justify-center p-4" onClick={() => setIsAdminModalOpen(false)}>
-          <div className="bg-white border border-slate-200  rounded-[28px] p-8 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-slate-900/60 z-[200] flex items-center justify-center p-4" onClick={() => setIsAdminModalOpen(false)}>
+          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tighter">Assign Division Admin</h3>
               <button onClick={() => setIsAdminModalOpen(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors"><X className="w-4 h-4" /></button>
@@ -719,7 +719,7 @@ export default function ProLeagueDashboard() {
             <p className="text-xs text-slate-500 font-bold mb-4">Enter the email of the user who will manage this division.</p>
             <input
               type="email" autoFocus
-              className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all mb-4"
+              className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all mb-4"
               placeholder="admin@test.com"
               value={adminEmail}
               onChange={e => setAdminEmail(e.target.value)}

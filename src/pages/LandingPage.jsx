@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 
 function GreenDiamondLogo() {
@@ -41,7 +41,7 @@ export default function LandingPage() {
           <Link to="/pro" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 transition-colors hover:from-emerald-400  text-white font-bold py-3 px-6 rounded-md shadow-lg shadow-sm hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 tracking-wide font-medium hover:bg-emerald-700 transition-colors">
             Sign In to Pro Suite
           </Link>
-          <Link to="/app" className="w-full sm:w-auto bg-white border border-slate-200  text-emerald-600 border-2 border-emerald-100 font-bold py-3 px-6 rounded-md shadow-sm tracking-wide font-medium hover:border-emerald-300 transition-colors">
+          <Link to="/app" className="w-full sm:w-auto bg-white border border-slate-200  text-emerald-600 border-2 border-emerald-100 font-bold py-3 px-6 rounded-md shadow-sm tracking-wide font-medium hover:border-green-300 transition-colors">
             Try the Classic App
           </Link>
         </div>
