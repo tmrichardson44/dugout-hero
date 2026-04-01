@@ -228,28 +228,28 @@ export default function ProTeamDashboard() {
 
   const ProBadge = () => (
     <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 relative">
-      <Link to="/pro/dashboard" className="bg-blue-50 text-blue-700 text-[10px] font-bold px-4 py-2 rounded-full border border-blue-100 flex items-center justify-center hover:bg-blue-100 transition whitespace-nowrap">
+      <Link to="/pro/dashboard" className="bg-blue-50 text-blue-700 text-[10px] font-black px-4 py-2 rounded-full border border-blue-100 flex items-center justify-center hover:bg-blue-100 transition whitespace-nowrap">
          DASHBOARD
       </Link>
-      <Link to="/pro/profile" className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-4 py-2 rounded-full border border-emerald-100 flex items-center justify-center hover:bg-emerald-100 transition whitespace-nowrap hidden sm:flex">
+      <Link to="/pro/profile" className="bg-violet-50 text-emerald-700 text-[10px] font-black px-4 py-2 rounded-full border border-violet-100 flex items-center justify-center hover:bg-emerald-100 transition whitespace-nowrap hidden sm:flex">
          PROFILE
       </Link>
       <div className="relative">
         <button 
           onClick={() => setShowTeamSwitcher(!showTeamSwitcher)}
-          className="bg-white/40  text-slate-700 text-[10px] font-bold px-4 py-2 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-100 transition whitespace-nowrap gap-2 tracking-wide font-medium"
+          className="bg-white/40 backdrop-blur-sm text-slate-700 text-[10px] font-black px-4 py-2 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-100 transition whitespace-nowrap gap-2 tracking-wide font-medium"
         >
            {teamDoc?.name || 'Loading Team...'} <ChevronDown className="w-3 h-3" />
         </button>
         {showTeamSwitcher && allTeams.length > 0 && (
-          <div className="absolute top-full right-0 mt-2 w-64 bg-white border border-slate-200  border border-slate-200 rounded-lg shadow-md z-50 py-2 animate-in zoom-in duration-200 origin-top-right">
-            <div className="px-4 py-2 text-[10px] font-bold text-slate-400 tracking-wide font-medium border-b border-slate-100 mb-2">Switch Team</div>
+          <div className="absolute top-full right-0 mt-2 w-64 bg-white/60 backdrop-blur-xl border border-white/40  border border-slate-200 rounded-2xl shadow-xl z-50 py-2 animate-in zoom-in duration-200 origin-top-right">
+            <div className="px-4 py-2 text-[10px] font-black text-slate-400 tracking-wide font-medium border-b border-slate-100 mb-2">Switch Team</div>
             {allTeams.map(t => (
               <Link
                 key={t.id}
                 to={`/pro/team/${t.id}`}
                 onClick={() => setShowTeamSwitcher(false)}
-                className={`block px-4 py-3 text-sm font-bold tracking-wide hover:bg-emerald-50 hover:text-emerald-700 transition-colors ${t.id === teamId ? 'text-emerald-600 bg-emerald-50/50' : 'text-slate-700'}`}
+                className={`block px-4 py-3 text-sm font-bold tracking-wide hover:bg-violet-50 hover:text-emerald-700 transition-colors ${t.id === teamId ? 'text-violet-600 bg-violet-50/50' : 'text-slate-700'}`}
               >
                 {t.name}
               </Link>

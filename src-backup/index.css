@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-indigo-300 via-purple-300 to-fuchsia-300 min-h-screen text-slate-800 antialiased selection:bg-fuchsia-200;
+  }
+}

@@ -40,15 +40,15 @@ export default function ProLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-white/40  flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white/40 backdrop-blur-sm flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-semibold tracking-tight text-slate-900">
+        <h2 className="mt-6 text-center text-3xl font-black uppercase tracking-tight text-slate-900">
           {isLogin ? 'Sign in to Pro' : 'Create Pro Account'}
         </h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white border border-slate-200  py-8 px-4 shadow-md shadow-slate-200/50 sm:rounded-xl sm:px-10 border border-slate-100">
+        <div className="bg-white/60 backdrop-blur-xl border border-white/40  py-8 px-4 shadow-xl shadow-slate-200/50 sm:rounded-3xl sm:px-10 border border-slate-100">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-rose-50 text-rose-600 p-4 rounded-xl text-sm font-bold">
@@ -58,13 +58,13 @@ export default function ProLogin() {
             
             {!isLogin && (
               <div>
-                <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">
+                <label className="block text-xs font-black text-slate-400 tracking-wide font-medium ml-1 mb-2">
                   Full Name
                 </label>
                 <input
                   type="text"
                   required
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all"
+                  className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-violet-500 transition-all"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                 />
@@ -72,26 +72,26 @@ export default function ProLogin() {
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">
+              <label className="block text-xs font-black text-slate-400 tracking-wide font-medium ml-1 mb-2">
                 Email address
               </label>
               <input
                 type="email"
                 required
-                className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all"
+                className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-violet-500 transition-all"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">
+              <label className="block text-xs font-black text-slate-400 tracking-wide font-medium ml-1 mb-2">
                 Password
               </label>
               <input
                 type="password"
                 required
-                className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all"
+                className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-violet-500 transition-all"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -100,7 +100,7 @@ export default function ProLogin() {
             <button
               disabled={loading}
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 font-bold py-3 rounded-lg shadow-lg shadow-sm tracking-wide font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:to-teal-300 shadow-md shadow-emerald-500/20 hover:-translate-y-0.5 hover:shadow-emerald-500/30 transition-all duration-300 font-black py-4 rounded-2xl shadow-lg shadow-emerald-200 tracking-wide font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
             >
               {isLogin ? 'Sign In' : 'Sign Up'}
             </button>
@@ -112,7 +112,7 @@ export default function ProLogin() {
               <div className="w-full border-t border-slate-200"></div>
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="px-4 bg-white border border-slate-200  text-slate-400 font-bold tracking-wide font-medium">Or</span>
+              <span className="px-4 bg-white/60 backdrop-blur-xl border border-white/40  text-slate-400 font-bold tracking-wide font-medium">Or</span>
             </div>
           </div>
 
@@ -132,7 +132,7 @@ export default function ProLogin() {
               setLoading(false);
             }}
             disabled={loading}
-            className="mt-4 w-full flex items-center justify-center gap-3 bg-white border border-slate-200  border-2 border-slate-200 text-slate-700 font-bold py-3.5 rounded-lg hover:bg-white/40  hover:border-slate-300 transition-all disabled:opacity-50"
+            className="mt-4 w-full flex items-center justify-center gap-3 bg-white/60 backdrop-blur-xl border border-white/40  border-2 border-slate-200 text-slate-700 font-bold py-3.5 rounded-2xl hover:bg-white/40 backdrop-blur-sm hover:border-slate-300 transition-all disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -146,7 +146,7 @@ export default function ProLogin() {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-emerald-600 font-bold text-sm tracking-wide hover:underline"
+              className="text-violet-600 font-bold text-sm tracking-wide hover:underline"
             >
               {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
             </button>

@@ -23,7 +23,7 @@ function AvgBar({ avg, target, low, high }) {
     <div className="flex items-center gap-3 w-full">
       <div className="flex-1 bg-slate-100 rounded-full h-2 relative overflow-hidden">
         <div
-          className={`h-2 rounded-full transition-all ${onTarget ? 'bg-emerald-500' : 'bg-rose-400'}`}
+          className={`h-2 rounded-full transition-all ${onTarget ? 'bg-violet-500' : 'bg-rose-400'}`}
           style={{ width: `${pct}%` }}
         />
         {/* target zone markers */}
@@ -34,7 +34,7 @@ function AvgBar({ avg, target, low, high }) {
           }}
         />
       </div>
-      <span className={`text-sm font-bold w-10 text-right ${onTarget ? 'text-emerald-600' : 'text-rose-500'}`}>
+      <span className={`text-sm font-black w-10 text-right ${onTarget ? 'text-violet-600' : 'text-rose-500'}`}>
         {avg.toFixed(1)}
       </span>
     </div>
@@ -96,36 +96,36 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
   };
 
   return (
-    <div className="bg-white border border-slate-200  rounded-[28px] border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 overflow-hidden group hover:shadow-lg hover:border-emerald-200 transition-all">
+    <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-[28px] border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 overflow-hidden group hover:shadow-lg hover:border-violet-200 transition-all">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start justify-between mb-3">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-lg text-slate-900 uppercase tracking-tighter leading-none">{team.name}</h3>
+              <h3 className="font-black text-lg text-slate-900 uppercase tracking-tighter leading-none">{team.name}</h3>
               {divisionName && divisionName !== 'No Division' && (
                 <span className="px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-bold tracking-wide text-slate-500">
                   {divisionName}
                 </span>
               )}
             </div>
-            <p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium mt-1">
+            <p className="text-[10px] font-black text-slate-400 tracking-wide font-medium mt-1">
               {players.length} Players · {games.length} Games · {team.season || 'Spring'} {team.year || '2026'}
             </p>
           </div>
           {isAdmin && (
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
-                onClick={() => onAssignCoach(team.id)}
-                title="Assign Coach / Change Division"
-                className="w-8 h-8 rounded-xl bg-white/40  text-slate-400 flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                onClick={() => setShowCoachModal(true)}
+                title="Assign Coach"
+                className="w-8 h-8 rounded-xl bg-white/40 backdrop-blur-sm text-slate-400 flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-colors"
               >
-                <Settings className="w-4 h-4" />
+                <Mail className="w-4 h-4" />
               </button>
               <button
                 onClick={() => onRemoveTeam(team.id)}
                 title="Remove from League"
-                className="w-8 h-8 rounded-xl bg-white/40  text-slate-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-colors"
+                className="w-8 h-8 rounded-xl bg-white/40 backdrop-blur-sm text-slate-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -137,20 +137,20 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
         {hasCoach ? (
           <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-xl mb-3">
             <ShieldCheck className="w-3 h-3 text-blue-500 shrink-0" />
-            <span className="text-[10px] font-bold text-blue-600 tracking-wide font-medium truncate">{displayCoachName}</span>
+            <span className="text-[10px] font-black text-blue-600 tracking-wide font-medium truncate">{displayCoachName}</span>
           </div>
         ) : (
           <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-xl mb-3">
             <Mail className="w-3 h-3 text-amber-500 shrink-0" />
-            <span className="text-[10px] font-bold text-amber-600 tracking-wide font-medium">No coach assigned</span>
+            <span className="text-[10px] font-black text-amber-600 tracking-wide font-medium">No coach assigned</span>
           </div>
         )}
 
         {/* Team avg bar */}
         <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-bold text-slate-400 tracking-wide font-medium">Team Avg Batting Pos.</span>
-            <span className="text-[10px] font-bold text-slate-300 uppercase">Target: {low.toFixed(1)}–{high.toFixed(1)}</span>
+            <span className="text-[10px] font-black text-slate-400 tracking-wide font-medium">Team Avg Batting Pos.</span>
+            <span className="text-[10px] font-black text-slate-300 uppercase">Target: {low.toFixed(1)}–{high.toFixed(1)}</span>
           </div>
           <AvgBar avg={teamAvg} target={target} low={low} high={high} />
         </div>
@@ -162,10 +162,10 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
           {playerStats.slice(0, 3).map(p => (
             <div key={p.id} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-violet-50 text-violet-600 text-[10px] font-black flex items-center justify-center">
                   {p.number}
                 </div>
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-tight truncate max-w-[100px]">{p.name}</span>
+                <span className="text-xs font-black text-slate-700 uppercase tracking-tight truncate max-w-[100px]">{p.name}</span>
               </div>
               <div className="w-32">
                 <AvgBar avg={p.avg} target={target} low={low} high={high} />
@@ -184,78 +184,62 @@ function LeagueTeamCard({ team, players, games, divisionName, onOpenLineup, onAs
       <div className="px-6 pb-5 pt-3">
         <button
           onClick={() => onOpenLineup(team.id)}
-          className="w-full bg-white/40  hover:bg-emerald-50 hover:text-emerald-700 text-slate-500 font-bold text-[10px] tracking-wide font-medium py-3 rounded-lg border border-slate-100 hover:border-emerald-200 transition-all flex items-center justify-center gap-2"
+          className="w-full bg-white/40 backdrop-blur-sm hover:bg-violet-50 hover:text-emerald-700 text-slate-500 font-black text-[10px] tracking-wide font-medium py-3 rounded-2xl border border-slate-100 hover:border-violet-200 transition-all flex items-center justify-center gap-2"
         >
           <BarChart3 className="w-4 h-4" /> View Full Stats
         </button>
       </div>
 
-      {/* Team settings modal (Coach + Division) */}
+      {/* Assign coach modal */}
       {showCoachModal && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[200] flex items-center justify-center p-4" onClick={() => setShowCoachModal(false)}>
-          <div className="bg-white border border-slate-200  rounded-[28px] p-8 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={() => setShowCoachModal(false)}>
+          <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-[28px] p-8 w-full max-w-sm shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tighter">Team Settings</h3>
+              <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter">Assign Coach</h3>
               <button onClick={() => setShowCoachModal(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
+            <p className="text-xs text-slate-500 font-bold mb-4">Select an existing user from the platform, or enter a new email.</p>
             
-            <div className="space-y-6">
-              <div>
-                <label className="block text-[10px] font-bold text-slate-400 tracking-wide font-medium mb-2 uppercase">Assign Coach</label>
-                <select
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm mb-2"
-                  value={assignCoachMode === 'new' ? 'NEW' : selectedCoachUid}
-                  onChange={e => {
-                    if (e.target.value === 'NEW') setAssignCoachMode('new');
-                    else { setAssignCoachMode('existing'); setSelectedCoachUid(e.target.value); }
-                  }}
-                >
-                  <option value="" disabled>-- Select a Coach --</option>
-                  {Object.values(usersMap || {}).map(u => (
-                    <option key={u.uid} value={u.uid}>{u.displayName || u.email}</option>
-                  ))}
-                  <option value="NEW">+ Invite New Coach via Email</option>
-                </select>
+            <label className="block text-[10px] font-black text-slate-400 tracking-wide font-medium mb-2">Select Coach</label>
+            <select
+              className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all mb-4"
+              value={assignCoachMode === 'new' ? 'NEW' : selectedCoachUid}
+              onChange={e => {
+                if (e.target.value === 'NEW') setAssignCoachMode('new');
+                else { setAssignCoachMode('existing'); setSelectedCoachUid(e.target.value); }
+              }}
+            >
+              <option value="" disabled>-- Select a Coach --</option>
+              {Object.values(usersMap || {}).map(u => (
+                <option key={u.uid} value={u.uid}>{u.displayName || u.email}</option>
+              ))}
+              <option value="NEW">+ Invite New Coach via Email</option>
+            </select>
 
-                {assignCoachMode === 'new' && (
-                  <input
-                    type="email"
-                    autoFocus
-                    className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm"
-                    placeholder="coach@example.com"
-                    value={coachEmail}
-                    onChange={e => setCoachEmail(e.target.value)}
-                  />
-                )}
-              </div>
+            {assignCoachMode === 'new' && (
+              <>
+                <label className="block text-[10px] font-black text-slate-400 tracking-wide font-medium mb-2">Coach Email</label>
+                <input
+                  type="email"
+                  autoFocus
+                  className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all mb-2"
+                  placeholder="coach@example.com"
+                  value={coachEmail}
+                  onChange={e => setCoachEmail(e.target.value)}
+                />
+              </>
+            )}
 
-              <div>
-                <label className="block text-[10px] font-bold text-slate-400 tracking-wide font-medium mb-2 uppercase">Move to Division</label>
-                <select
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all text-sm"
-                  value={team.divisionId || ''}
-                  onChange={async (e) => {
-                    await onAssignCoach(team.id, team.coachEmail, team.managerUid, team.coachName, e.target.value);
-                  }}
-                >
-                  <option value="">No Division</option>
-                  {/* We need divisions passed in here, but for now we'll assume they are in scope or handled by parent */}
-                  <option disabled>Select division in full dashboard...</option>
-                </select>
-              </div>
-
-              {coachErr && <p className="text-rose-500 text-xs font-bold">{coachErr}</p>}
-              
-              <button
-                onClick={handleSaveCoach}
-                disabled={saving || (assignCoachMode === 'new' && !coachEmail.trim()) || (assignCoachMode === 'existing' && !selectedCoachUid)}
-                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 font-bold py-3 rounded-lg text-xs tracking-wide font-medium disabled:opacity-50"
-              >
-                {saving ? 'Saving…' : 'Save Changes'}
-              </button>
-            </div>
+            {coachErr && <p className="text-rose-500 text-xs font-bold mb-2">{coachErr}</p>}
+            <button
+              onClick={handleSaveCoach}
+              disabled={saving || (assignCoachMode === 'new' && !coachEmail.trim()) || (assignCoachMode === 'existing' && !selectedCoachUid)}
+              className="w-full bg-blue-600 text-white font-black py-3 rounded-2xl text-xs tracking-wide font-medium mt-2 hover:bg-blue-700 transition-colors disabled:opacity-50"
+            >
+              {saving ? 'Saving…' : 'Save Coach'}
+            </button>
           </div>
         </div>
       )}
@@ -281,14 +265,14 @@ function TeamStatsModal({ team, players, games, onClose }) {
   }).sort((a, b) => (a.avg ?? 99) - (b.avg ?? 99));
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60  z-[200] flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white border border-slate-200  rounded-xl w-full max-w-lg shadow-lg animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-3xl w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
         <div className="p-8 pb-4 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div>
             <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{team.name}</h2>
-            <p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium mt-1">Batting Order Averages · Target: {low.toFixed(1)}–{high.toFixed(1)}</p>
+            <p className="text-[10px] font-black text-slate-400 tracking-wide font-medium mt-1">Batting Order Averages · Target: {low.toFixed(1)}–{high.toFixed(1)}</p>
           </div>
-          <button onClick={onClose} className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors">
+          <button onClick={onClose} className="w-10 h-10 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -298,13 +282,13 @@ function TeamStatsModal({ team, players, games, onClose }) {
           )}
           {playerStats.map(p => (
             <div key={p.id} className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center font-bold text-emerald-600 text-sm shrink-0">{p.number}</div>
+              <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center font-black text-violet-600 text-sm shrink-0">{p.number}</div>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-900 text-sm uppercase tracking-tight leading-none mb-2">{p.name}</p>
+                <p className="font-black text-slate-900 text-sm uppercase tracking-tight leading-none mb-2">{p.name}</p>
                 <AvgBar avg={p.avg} target={(low + high) / 2} low={low} high={high} />
               </div>
               <div className="text-right shrink-0">
-                <p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium">{p.gameCount} games</p>
+                <p className="text-[10px] font-black text-slate-400 tracking-wide font-medium">{p.gameCount} games</p>
               </div>
             </div>
           ))}
@@ -335,11 +319,6 @@ export default function ProLeagueDashboard() {
   const [addTeamSearch, setAddTeamSearch] = useState('');
   const [addingTeam, setAddingTeam] = useState(false);
   const [usersMap, setUsersMap] = useState({});
-
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
-  const [adminTargetId, setAdminTargetId] = useState(null); // divisionId
-  const [adminEmail, setAdminEmail] = useState('');
-  const [adminSaving, setAdminSaving] = useState(false);
 
   const [filterSeason, setFilterSeason] = useState('All Seasons');
   const [filterYear, setFilterYear] = useState('All Years');
@@ -408,11 +387,10 @@ export default function ProLeagueDashboard() {
     return () => unsubs.forEach(u => u());
   }, [teams]);
 
-  const handleAssignCoach = async (teamId, coachEmail, coachUid, coachName, divisionId) => {
+  const handleAssignCoach = async (teamId, coachEmail, coachUid, coachName) => {
     const update = { coachEmail, leagueId };
-    if (coachUid !== undefined) update.managerUid = coachUid;
-    if (coachName !== undefined) update.coachName = coachName;
-    if (divisionId !== undefined) update.divisionId = divisionId;
+    if (coachUid) update.managerUid = coachUid;
+    if (coachName) update.coachName = coachName;
     await updateDoc(doc(db, SAAS_ROOT, SAAS_VERSION, 'teams', teamId), update);
   };
 
@@ -481,7 +459,7 @@ export default function ProLeagueDashboard() {
   });
 
   if (loading || !league) {
-    return <div className="min-h-screen bg-white/40  flex items-center justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>;
+    return <div className="min-h-screen bg-white/40 backdrop-blur-sm flex items-center justify-center"><div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>;
   }
 
   const totalTeams   = teams.length;
@@ -489,7 +467,7 @@ export default function ProLeagueDashboard() {
   const totalGames   = Object.values(teamData).reduce((s, d) => s + (d.games?.length   || 0), 0);
 
   return (
-    <div className="min-h-screen bg-white/40 ">
+    <div className="min-h-screen bg-white/40 backdrop-blur-sm">
       {/* Nav */}
       <nav className="bg-blue-600 text-white p-4 flex items-center justify-between shadow-lg sticky top-0 z-50">
         <div className="flex items-center gap-3">
@@ -497,14 +475,14 @@ export default function ProLeagueDashboard() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <div className="font-bold tracking-widest uppercase text-sm leading-none">{league.name}</div>
+            <div className="font-black tracking-widest uppercase text-sm leading-none">{league.name}</div>
             <div className="text-blue-300 text-[10px] font-bold tracking-wide font-medium mt-0.5">League Admin Dashboard</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAddTeam(true)}
-            className="bg-blue-700 hover:bg-blue-800 text-white text-[10px] font-bold px-4 py-2 rounded-xl transition-colors flex items-center gap-2 tracking-wide font-medium"
+            className="bg-blue-700 hover:bg-blue-800 text-white text-[10px] font-black px-4 py-2 rounded-xl transition-colors flex items-center gap-2 tracking-wide font-medium"
           >
             <Plus className="w-3 h-3" /> Add Team
           </button>
@@ -520,13 +498,13 @@ export default function ProLeagueDashboard() {
             { icon: Trophy,    label: 'Total Players',  value: totalPlayers },
             { icon: TrendingUp,label: 'Total Games',    value: totalGames   },
           ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="bg-white border border-slate-200  rounded-lg p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex items-center gap-4">
-              <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
-                <Icon className="w-6 h-6 text-emerald-600" />
+            <div key={label} className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex items-center gap-4">
+              <div className="w-12 h-12 bg-violet-50 rounded-2xl flex items-center justify-center">
+                <Icon className="w-6 h-6 text-violet-600" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-slate-900 leading-none">{value}</p>
-                <p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium mt-1">{label}</p>
+                <p className="text-3xl font-black text-slate-900 leading-none">{value}</p>
+                <p className="text-[10px] font-black text-slate-400 tracking-wide font-medium mt-1">{label}</p>
               </div>
             </div>
           ))}
@@ -534,34 +512,22 @@ export default function ProLeagueDashboard() {
 
         {/* Divisions Section */}
         <div className="flex justify-between items-end mb-4">
-          <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">Divisions</h2>
+          <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Divisions</h2>
           <button onClick={() => setIsCreatingDivision(true)} className="text-blue-600 font-bold text-xs hover:underline flex items-center gap-1"><Plus className="w-3 h-3"/> New Division</button>
         </div>
         
         {divisions.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
             {divisions.map(div => (
-              <div key={div.id} className="bg-white border border-slate-200  p-5 rounded-lg border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 relative group overflow-hidden">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-white/40  text-slate-600 rounded-lg flex items-center justify-center"><Layers className="w-4 h-4" /></div>
-                    <h3 className="font-bold text-lg text-slate-800 uppercase tracking-tighter">{div.name}</h3>
-                  </div>
-                  <button 
-                    onClick={() => { setAdminTargetId(div.id); setAdminEmail(div.adminEmail || ''); setIsAdminModalOpen(true); }}
-                    className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                    title="Assign Division Admin"
-                  >
-                    <Users className="w-4 h-4" />
-                  </button>
+              <div key={div.id} className="bg-white/60 backdrop-blur-xl border border-white/40  p-5 rounded-2xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 relative group overflow-hidden">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 bg-white/40 backdrop-blur-sm text-slate-600 rounded-lg flex items-center justify-center"><Layers className="w-4 h-4" /></div>
+                  <h3 className="font-black text-lg text-slate-800 uppercase tracking-tighter">{div.name}</h3>
                 </div>
-                <div className="flex items-center gap-2 mb-2">
-                  <ShieldCheck className="w-3 h-3 text-slate-400" />
-                  <p className="text-[10px] font-bold tracking-wide text-slate-500 truncate">
-                    {usersMap[div.adminUid]?.displayName || div.adminName || div.adminEmail || 'No Admin Assigned'}
-                  </p>
-                </div>
-                <div className="text-[10px] font-bold text-slate-400">
+                <p className="text-[10px] font-bold tracking-wide text-slate-400 mb-2">
+                  Admin: {usersMap[div.adminUid]?.displayName || div.adminName || div.adminEmail || 'None assigned'}
+                </p>
+                <div className="text-[10px] font-bold text-slate-500">
                   {teams.filter(t => t.divisionId === div.id).length} Teams total • {displayTeams.filter(t => t.divisionId === div.id).length} shown
                 </div>
               </div>
@@ -570,24 +536,24 @@ export default function ProLeagueDashboard() {
         )}
 
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4 border-t border-slate-200 pt-8">
-          <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">All Teams</h2>
+          <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter">All Teams</h2>
           
           <div className="flex gap-2">
-            <select value={filterDivision} onChange={e => setFilterDivision(e.target.value)} className="bg-white/40  border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
+            <select value={filterDivision} onChange={e => setFilterDivision(e.target.value)} className="bg-white/40 backdrop-blur-sm border border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
               <option value="All Divisions">All Divisions</option>
               {divisions.map(d => (
                 <option key={d.id} value={d.id}>{d.name}</option>
               ))}
               <option value="No Division">No Division</option>
             </select>
-            <select value={filterSeason} onChange={e => setFilterSeason(e.target.value)} className="bg-white/40  border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
+            <select value={filterSeason} onChange={e => setFilterSeason(e.target.value)} className="bg-white/40 backdrop-blur-sm border border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
               <option value="All Seasons">All Seasons</option>
               <option value="Spring">Spring</option>
               <option value="Summer">Summer</option>
               <option value="Fall">Fall</option>
               <option value="Winter">Winter</option>
             </select>
-            <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="bg-white/40  border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
+            <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="bg-white/40 backdrop-blur-sm border border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-slate-600 tracking-wide font-medium outline-none focus:border-blue-500 appearance-none cursor-pointer">
               <option value="All Years">All Years</option>
               {Array.from({length: 20}).map((_, i) => {
                  const y = (2026 + i).toString();
@@ -599,18 +565,18 @@ export default function ProLeagueDashboard() {
 
         {/* Teams grid */}
         {teams.length === 0 ? (
-          <div className="bg-white border border-slate-200  rounded-xl p-16 flex flex-col items-center justify-center border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300">
+          <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-3xl p-16 flex flex-col items-center justify-center border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300">
             <Users className="w-16 h-16 text-slate-200 mb-4" />
-            <h3 className="text-xl font-bold text-slate-700 mb-2">No Teams Yet</h3>
+            <h3 className="text-xl font-black text-slate-700 mb-2">No Teams Yet</h3>
             <p className="text-slate-400 font-bold mb-6">Add existing teams or create new ones for this league.</p>
-            <button onClick={() => setShowAddTeam(true)} className="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-lg font-bold text-sm tracking-wide font-medium hover:bg-emerald-200 transition flex items-center gap-2">
+            <button onClick={() => setShowAddTeam(true)} className="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-2xl font-black text-sm tracking-wide font-medium hover:bg-emerald-200 transition flex items-center gap-2">
               <Plus className="w-4 h-4" /> Add Team
             </button>
           </div>
         ) : displayTeams.length === 0 ? (
-          <div className="bg-white/40  rounded-xl p-16 flex flex-col items-center justify-center border border-slate-200 border-dashed">
+          <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-16 flex flex-col items-center justify-center border border-slate-200 border-dashed">
             <p className="text-slate-400 font-bold mb-2">No teams match `{filterSeason} {filterYear}`</p>
-            <button onClick={() => { setFilterSeason('All Seasons'); setFilterYear('All Years'); }} className="text-blue-600 font-bold text-xs tracking-wide font-medium hover:underline">Clear Filters</button>
+            <button onClick={() => { setFilterSeason('All Seasons'); setFilterYear('All Years'); }} className="text-blue-600 font-black text-xs tracking-wide font-medium hover:underline">Clear Filters</button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -634,18 +600,18 @@ export default function ProLeagueDashboard() {
 
       {/* Create Division Modal */}
       {isCreatingDivision && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[100] flex items-center justify-center p-4" onClick={() => setIsCreatingDivision(false)}>
-          <div className="bg-white border border-slate-200  rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setIsCreatingDivision(false)}>
+          <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-3xl p-8 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">New Division</h3>
+              <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">New Division</h3>
               <button onClick={() => { setIsCreatingDivision(false); setNewDivisionName(''); }} className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors"><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={handleCreateDivision} className="space-y-6">
               <div>
-                <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">Division Name</label>
+                <label className="block text-xs font-black text-slate-400 tracking-wide font-medium ml-1 mb-2">Division Name</label>
                 <input
                   type="text" autoFocus
-                  className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-blue-500 transition-all uppercase placeholder:normal-case"
+                  className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-blue-500 transition-all uppercase placeholder:normal-case"
                   placeholder="e.g. American League"
                   value={newDivisionName}
                   onChange={e => setNewDivisionName(e.target.value)}
@@ -654,7 +620,7 @@ export default function ProLeagueDashboard() {
               <button
                 type="submit"
                 disabled={!newDivisionName.trim()}
-                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-200 tracking-wide font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:shadow-none"
+                className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-200 tracking-wide font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:shadow-none"
               >
                 Create Division
               </button>
@@ -665,15 +631,15 @@ export default function ProLeagueDashboard() {
 
       {/* Add team modal */}
       {showAddTeam && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[100] flex items-center justify-center p-4" onClick={() => setShowAddTeam(false)}>
-          <div className="bg-white border border-slate-200  rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setShowAddTeam(false)}>
+          <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-3xl p-8 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">Add Team to League</h3>
+              <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Add Team to League</h3>
               <button onClick={() => setShowAddTeam(false)} className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 transition-colors"><X className="w-4 h-4" /></button>
             </div>
 
             <input
-              className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all mb-4 text-sm"
+              className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-bold text-slate-700 outline-none focus:border-violet-500 transition-all mb-4 text-sm"
               placeholder="Search your teams…"
               value={addTeamSearch}
               onChange={e => setAddTeamSearch(e.target.value)}
@@ -681,16 +647,16 @@ export default function ProLeagueDashboard() {
 
             <div className="space-y-2 max-h-52 overflow-y-auto mb-4">
               {filteredUserTeams.length === 0 && (
-                <p className="text-slate-400 font-bold text-sm text-center py-3">No available teams found.</p>
+                <p className="text-slate-400 font-bold text-sm text-center py-4">No available teams found.</p>
               )}
               {filteredUserTeams.map(team => (
                 <button
                   key={team.id}
                   onClick={() => handleAddExistingTeam(team)}
                   disabled={addingTeam}
-                  className="w-full flex items-center justify-between bg-white/40  hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 p-4 rounded-lg transition-all text-left"
+                  className="w-full flex items-center justify-between bg-white/40 backdrop-blur-sm hover:bg-violet-50 hover:border-violet-300 border border-slate-200 p-4 rounded-2xl transition-all text-left"
                 >
-                  <span className="font-bold text-slate-800 uppercase text-sm">{team.name}</span>
+                  <span className="font-black text-slate-800 uppercase text-sm">{team.name}</span>
                   <ChevronRight className="w-4 h-4 text-slate-300" />
                 </button>
               ))}
@@ -699,55 +665,11 @@ export default function ProLeagueDashboard() {
             <div className="border-t border-slate-100 pt-4">
               <button
                 onClick={handleCreateTeam}
-                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 font-bold py-3 rounded-lg text-xs tracking-wide font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:to-teal-300 shadow-md shadow-emerald-500/20 hover:-translate-y-0.5 hover:shadow-emerald-500/30 transition-all duration-300 font-black py-3 rounded-2xl text-xs tracking-wide font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" /> Create Brand New Team
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Admin Assign Modal */}
-      {isAdminModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50  z-[200] flex items-center justify-center p-4" onClick={() => setIsAdminModalOpen(false)}>
-          <div className="bg-white border border-slate-200  rounded-[28px] p-8 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tighter">Assign Division Admin</h3>
-              <button onClick={() => setIsAdminModalOpen(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors"><X className="w-4 h-4" /></button>
-            </div>
-            <p className="text-xs text-slate-500 font-bold mb-4">Enter the email of the user who will manage this division.</p>
-            <input
-              type="email" autoFocus
-              className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all mb-4"
-              placeholder="admin@test.com"
-              value={adminEmail}
-              onChange={e => setAdminEmail(e.target.value)}
-            />
-            <button
-              onClick={async () => {
-                setAdminSaving(true);
-                try {
-                  let uid = null;
-                  const q = query(collection(db, 'users'), where('email', '==', adminEmail.trim().toLowerCase()));
-                  const snap = await getDocs(q);
-                  if (!snap.empty) uid = snap.docs[0].id;
-                  
-                  await updateDoc(doc(db, SAAS_ROOT, SAAS_VERSION, 'divisions', adminTargetId), {
-                    adminEmail: adminEmail.trim().toLowerCase(),
-                    adminUid: uid
-                  });
-                  setIsAdminModalOpen(false);
-                } catch (e) {
-                  alert(e.message);
-                }
-                setAdminSaving(false);
-              }}
-              disabled={adminSaving || !adminEmail.trim()}
-              className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg text-xs tracking-wide font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
-            >
-              {adminSaving ? 'Assigning…' : 'Assign Admin'}
-            </button>
           </div>
         </div>
       )}

@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  display: block;
+@layer base {
+  body {
+    @apply bg-slate-50 min-h-screen text-slate-800 antialiased selection:bg-emerald-200;
+  }
 }

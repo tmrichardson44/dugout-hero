@@ -23,7 +23,7 @@ export default function App() {
           {/* The Classic App Route */}
           <Route path="/app" element={
             <div className="bg-transparent min-h-screen">
-              <div className="bg-blue-600 text-white text-[10px] font-bold p-1 text-center tracking-wide font-medium relative z-[100] border-b border-blue-700">
+              <div className="bg-blue-600 text-white text-[10px] font-black p-1 text-center tracking-wide font-medium relative z-[100] border-b border-blue-700">
                 <a href="/" className="absolute left-4 top-1 flex items-center hover:text-blue-200 transition-colors cursor-pointer">
                   Exit
                 </a>
@@ -74,7 +74,7 @@ export default function App() {
           {/* Placeholder for Admin Panel Route */}
           <Route path="/admin" element={
             <ProtectedRoute requiredRole="super_admin">
-              <div className="p-8 text-center mt-20"><h1 className="text-2xl font-bold text-rose-600">Admin Area Status: Under Construction</h1><a href="/pro/dashboard" className="text-emerald-600 font-bold mt-4 block">Return to Dashboard</a></div>
+              <div className="p-8 text-center mt-20"><h1 className="text-2xl font-black text-rose-600">Admin Area Status: Under Construction</h1><a href="/pro/dashboard" className="text-violet-600 font-bold mt-4 block">Return to Dashboard</a></div>
             </ProtectedRoute>
           } />
 

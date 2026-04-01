@@ -25,7 +25,7 @@ export function GreenDiamondLogo() {
   return (
     <div className="relative flex items-center justify-center mr-2">
       <div className="animate-float">
-        <svg viewBox="0 0 24 24" className="w-10 h-10 fill-emerald-500 drop-shadow-md" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 24 24" className="w-10 h-10 fill-emerald-500 drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2L2 12l10 10 10-10L12 2z" />
           <circle cx="12" cy="12" r="2" className="fill-white/80" />
         </svg>
@@ -48,8 +48,8 @@ function PrintView({ selectedGame, players, seasonConfig, inline = false }) {
   const headerTitle = selectedGame.isHome ? `vs ${selectedGame.opponent}` : `@ ${selectedGame.opponent}`;
   
   const containerClass = inline 
-    ? "bg-white border border-slate-200  p-4 sm:p-8 w-full border-2 border-slate-200 rounded-xl shadow-inner overflow-x-auto mt-4" 
-    : "hidden print:block bg-white border border-slate-200  p-8 w-full h-full text-slate-900 font-sans";
+    ? "bg-white/60 backdrop-blur-xl border border-white/40  p-4 sm:p-8 w-full border-2 border-slate-200 rounded-3xl shadow-inner overflow-x-auto mt-4" 
+    : "hidden print:block bg-white/60 backdrop-blur-xl border border-white/40  p-8 w-full h-full text-slate-900 font-sans";
 
   return (
     <div id={inline ? "inline-preview" : "printable-area"} className={containerClass}>
@@ -66,13 +66,13 @@ function PrintView({ selectedGame, players, seasonConfig, inline = false }) {
         </div>
 
         <div className="w-full">
-          <h2 className="bg-black text-white text-center py-2 print:py-1 font-semibold text-sm print:text-xs tracking-widest mb-4 print:mb-2 border-2 border-black">Lineup & Defensive Rotation</h2>
+          <h2 className="bg-black text-white text-center py-2 print:py-1 font-black uppercase text-sm print:text-xs tracking-widest mb-4 print:mb-2 border-2 border-black">Lineup & Defensive Rotation</h2>
           <table className="w-full border-[6px] print:border-[4px] border-black text-center border-collapse">
             <thead className="bg-slate-200">
               <tr>
-                <th className="p-3 print:p-1.5 border-2 border-black text-xs font-semibold text-center w-12 print:w-8">#</th>
-                <th className="p-3 print:p-1.5 border-2 border-black text-xs font-semibold text-left w-64 print:w-48">Player</th>
-                {Array.from({ length: seasonConfig.innings || 6 }).map((_, i) => <th key={i} className="p-3 print:p-1.5 border-2 border-black text-xs font-semibold text-[10px]">Inn {i + 1}</th>)}
+                <th className="p-3 print:p-1.5 border-2 border-black text-xs font-black uppercase text-center w-12 print:w-8">#</th>
+                <th className="p-3 print:p-1.5 border-2 border-black text-xs font-black uppercase text-left w-64 print:w-48">Player</th>
+                {Array.from({ length: seasonConfig.innings || 6 }).map((_, i) => <th key={i} className="p-3 print:p-1.5 border-2 border-black text-xs font-black uppercase text-[10px]">Inn {i + 1}</th>)}
               </tr>
             </thead>
             <tbody>
@@ -92,13 +92,13 @@ function PrintView({ selectedGame, players, seasonConfig, inline = false }) {
 
                 return orderedPlayers.map((item, idx) => (
                   <tr key={idx} className="border-b-2 border-black">
-                    <td className="p-3 print:p-1.5 border-2 border-black text-center font-bold text-xl print:text-base text-slate-400">{item.slot}</td>
-                    <td className="p-3 print:p-1.5 border-2 border-black text-left font-bold text-xl print:text-base bg-white/40  whitespace-nowrap uppercase tracking-tighter leading-none">{item.player ? item.player.name : '—'}</td>
+                    <td className="p-3 print:p-1.5 border-2 border-black text-center font-black text-xl print:text-base text-slate-400">{item.slot}</td>
+                    <td className="p-3 print:p-1.5 border-2 border-black text-left font-black text-xl print:text-base bg-white/40 backdrop-blur-sm whitespace-nowrap uppercase tracking-tighter leading-none">{item.player ? item.player.name : '—'}</td>
                     {Array.from({ length: seasonConfig.innings || 6 }).map((_, inn) => {
-                      if (!item.player) return <td key={inn} className="p-3 print:p-1.5 border-2 border-black bg-white/40 "></td>;
+                      if (!item.player) return <td key={inn} className="p-3 print:p-1.5 border-2 border-black bg-white/40 backdrop-blur-sm"></td>;
                       const pos = selectedGame.field?.[inn]?.[item.player.id] || '-';
                       const isBench = pos === 'Bench' || pos === 'B';
-                      return <td key={inn} className={`p-3 print:p-1.5 border-2 border-black font-bold text-2xl print:text-lg ${isBench ? 'text-slate-300' : ''}`}>{isBench ? 'B' : pos}</td>;
+                      return <td key={inn} className={`p-3 print:p-1.5 border-2 border-black font-black text-2xl print:text-lg ${isBench ? 'text-slate-300' : ''}`}>{isBench ? 'B' : pos}</td>;
                     })}
                   </tr>
                 ));
@@ -123,25 +123,25 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
 
   return (
     <div className="p-4 space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 space-y-8">
+      <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 space-y-8">
         <div className="flex items-center justify-between border-b border-slate-50 pb-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center"><SettingsIcon className="w-6 h-6 text-emerald-600" /></div>
-            <div><h2 className="text-xl font-bold text-slate-900">Season Setup</h2><p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium leading-none mt-1">Configure Team Framework</p></div>
+            <div className="w-12 h-12 bg-violet-50 rounded-2xl flex items-center justify-center"><SettingsIcon className="w-6 h-6 text-violet-600" /></div>
+            <div><h2 className="text-xl font-black text-slate-900 uppercase">Season Setup</h2><p className="text-[10px] font-black text-slate-400 tracking-wide font-medium leading-none mt-1">Configure Team Framework</p></div>
           </div>
-          {isSaved && (<div className="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-4 py-2 rounded-full border border-emerald-100 animate-bounce">SAVED</div>)}
+          {isSaved && (<div className="bg-violet-50 text-violet-600 text-[10px] font-black px-4 py-2 rounded-full border border-violet-100 animate-bounce">SAVED</div>)}
         </div>
 
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Team Name</label>
-              <input className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all uppercase placeholder:normal-case" placeholder="Team Name" value={draft.teamName || ''} onChange={(e) => setDraft({...draft, teamName: e.target.value})} />
+              <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium ml-1">Team Name</label>
+              <input className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-[20px] px-6 py-4 font-black text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-violet-500 transition-all uppercase placeholder:normal-case" placeholder="Team Name" value={draft.teamName || ''} onChange={(e) => setDraft({...draft, teamName: e.target.value})} />
             </div>
             
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Legacy Program</label>
-              <select className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.program || 'Independent'} onChange={(e) => setDraft({...draft, program: e.target.value})}>
+              <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium ml-1">Legacy Program</label>
+              <select className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-[20px] px-6 py-4 font-black text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-violet-500 transition-all appearance-none cursor-pointer" value={draft.program || 'Independent'} onChange={(e) => setDraft({...draft, program: e.target.value})}>
                  <option value="Independent">Independent (No Program/League)</option>
                  <option value="Hopkinton Little League">Hopkinton Little League</option>
                  <option disabled value="">More programs coming soon...</option>
@@ -149,8 +149,8 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Season</label>
-              <select className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.season || 'Spring'} onChange={(e) => setDraft({...draft, season: e.target.value})}>
+              <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium ml-1">Season</label>
+              <select className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-[20px] px-6 py-4 font-black text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-violet-500 transition-all appearance-none cursor-pointer" value={draft.season || 'Spring'} onChange={(e) => setDraft({...draft, season: e.target.value})}>
                  <option value="Spring">Spring</option>
                  <option value="Summer">Summer</option>
                  <option value="Fall">Fall</option>
@@ -159,8 +159,8 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Year</label>
-              <select className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-emerald-500 transition-all appearance-none cursor-pointer" value={draft.year || '2026'} onChange={(e) => setDraft({...draft, year: e.target.value})}>
+              <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium ml-1">Year</label>
+              <select className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-[20px] px-6 py-4 font-black text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-violet-500 transition-all appearance-none cursor-pointer" value={draft.year || '2026'} onChange={(e) => setDraft({...draft, year: e.target.value})}>
                  {Array.from({length: 20}).map((_, i) => {
                     const y = (2026 + i).toString();
                     return <option key={y} value={y}>{y}</option>;
@@ -169,20 +169,20 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Coach's Name</label>
-              <input className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={coachName || ''} readOnly />
+              <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium ml-1">Coach's Name</label>
+              <input className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-[20px] px-6 py-4 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={coachName || ''} readOnly />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">Division</label>
-              <input className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={divisionName || 'Unassigned'} readOnly />
+              <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium ml-1">Division</label>
+              <input className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-[20px] px-6 py-4 font-bold text-slate-500 outline-none uppercase placeholder:normal-case cursor-not-allowed" disabled value={divisionName || 'Unassigned'} readOnly />
             </div>
 
             {availableLeagues.length > 0 && (
               <div className="space-y-2 md:col-span-2">
-                <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium ml-1">League (Reassign)</label>
+                <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium ml-1">League (Reassign)</label>
                 <select
-                  className="w-full bg-white/40  border border-slate-200 rounded-[20px] px-6 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200  focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                  className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-[20px] px-6 py-4 font-black text-slate-700 outline-none focus:bg-white/60 backdrop-blur-xl border border-white/40  focus:border-blue-500 transition-all appearance-none cursor-pointer"
                   value={draft.leagueId || ''}
                   onChange={(e) => setDraft({...draft, leagueId: e.target.value})}
                 >
@@ -195,35 +195,35 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
             )}
           </div>
 
-          <div className="bg-white/40  p-6 rounded-xl space-y-6">
+          <div className="bg-white/40 backdrop-blur-sm p-6 rounded-3xl space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-widest">Roster Size</label>
-                <input type="number" className="w-full bg-white border border-slate-200  border border-slate-200 rounded-lg px-5 py-3 font-bold outline-none" value={draft.rosterSize || 12} onChange={(e) => setDraft({...draft, rosterSize: parseInt(e.target.value) || 0})} />
+                <label className="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Roster Size</label>
+                <input type="number" className="w-full bg-white/60 backdrop-blur-xl border border-white/40  border border-slate-200 rounded-2xl px-5 py-4 font-black outline-none" value={draft.rosterSize || 12} onChange={(e) => setDraft({...draft, rosterSize: parseInt(e.target.value) || 0})} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-widest">Innings</label>
-                <input type="number" className="w-full bg-white border border-slate-200  border border-slate-200 rounded-lg px-5 py-3 font-bold outline-none" value={draft.innings || 6} onChange={(e) => setDraft({...draft, innings: parseInt(e.target.value) || 6})} />
+                <label className="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Innings</label>
+                <input type="number" className="w-full bg-white/60 backdrop-blur-xl border border-white/40  border border-slate-200 rounded-2xl px-5 py-4 font-black outline-none" value={draft.innings || 6} onChange={(e) => setDraft({...draft, innings: parseInt(e.target.value) || 6})} />
               </div>
             </div>
-            <div className="bg-emerald-600/5 p-5 rounded-lg border border-emerald-100 flex flex-col gap-3">
+            <div className="bg-emerald-600/5 p-5 rounded-2xl border border-violet-100 flex flex-col gap-3">
               <div className="flex justify-between items-center w-full">
                 <div className="flex gap-4 items-center">
-                  <BarChart3 className="w-6 h-6 text-emerald-600 shrink-0" />
+                  <BarChart3 className="w-6 h-6 text-violet-600 shrink-0" />
                   <p className="text-[10px] font-bold text-emerald-900 leading-relaxed uppercase">
                     Track Lineup Trends & Optimal Batting Average
                   </p>
                 </div>
                 <button 
                   onClick={() => setDraft({...draft, enableTrends: draft.enableTrends !== false ? false : true })}
-                  className={`w-12 h-6 rounded-full transition-all relative ${draft.enableTrends !== false ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                  className={`w-12 h-6 rounded-full transition-all relative ${draft.enableTrends !== false ? 'bg-violet-500' : 'bg-slate-300'}`}
                 >
-                  <div className={`w-4 h-4 rounded-full bg-white border border-slate-200  absolute top-1 transition-all ${draft.enableTrends !== false ? 'left-7' : 'left-1'}`} />
+                  <div className={`w-4 h-4 rounded-full bg-white/60 backdrop-blur-xl border border-white/40  absolute top-1 transition-all ${draft.enableTrends !== false ? 'left-7' : 'left-1'}`} />
                 </button>
               </div>
               {draft.enableTrends !== false && (
                 <div className="pl-10 text-[10px] font-bold text-emerald-800 leading-relaxed uppercase">
-                  Target Range: <span className="text-emerald-600 font-bold tracking-widest bg-emerald-100 px-2 py-1 rounded-lg ml-1">{(((draft.rosterSize || 12) / 2) - 1).toFixed(2)} - {(((draft.rosterSize || 12) / 2) + 0.75).toFixed(2)}</span>
+                  Target Range: <span className="text-violet-600 font-black tracking-widest bg-emerald-100 px-2 py-1 rounded-lg ml-1">{(((draft.rosterSize || 12) / 2) - 1).toFixed(2)} - {(((draft.rosterSize || 12) / 2) + 0.75).toFixed(2)}</span>
                 </div>
               )}
             </div>
@@ -231,7 +231,7 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-xs font-bold text-slate-900 tracking-wide font-medium ml-1">Rotation Positions</h3>
+          <h3 className="text-xs font-black text-slate-900 tracking-wide font-medium ml-1">Rotation Positions</h3>
           <div className="grid grid-cols-3 gap-2">
             {MASTER_POSITIONS.map(pos => {
               const active = (draft.enabledPositions || []).includes(pos.id);
@@ -239,8 +239,8 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
                 <button key={pos.id} onClick={() => {
                   const next = active ? (draft.enabledPositions || []).filter(id => id !== pos.id) : [...(draft.enabledPositions || []), pos.id];
                   setDraft({...draft, enabledPositions: next});
-                }} className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all ${active ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white/40  border-slate-100 text-slate-300 opacity-60'}`}>
-                  <div className="font-bold text-xs">{pos.id}</div>
+                }} className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${active ? 'bg-violet-50 border-violet-500 text-emerald-700' : 'bg-white/40 backdrop-blur-sm border-slate-100 text-slate-300 opacity-60'}`}>
+                  <div className="font-black text-xs">{pos.id}</div>
                   {active ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border-2 border-slate-200" />}
                 </button>
               );
@@ -248,13 +248,13 @@ function SeasonSettingsView({ seasonConfig, onSave, availableLeagues = [], coach
           </div>
         </div>
         
-        <button onClick={handleSave} className="w-full bg-blue-600 hover:bg-blue-700 transition-colors hover:from-emerald-400  text-white font-bold py-3 rounded-md shadow-lg shadow-sm hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-3 active:scale-95 transition-all text-sm tracking-wide font-medium">
+        <button onClick={handleSave} className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-400 hover:to-fuchsia-400 text-white font-black py-5 rounded-3xl shadow-lg shadow-emerald-500/30 hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-3 active:scale-95 transition-all text-sm tracking-wide font-medium">
           <Save className="w-6 h-6" /> Save Seasonal Framework
         </button>
         
         {canDeleteTeam && (
           <div className="mt-8 pt-8 border-t border-rose-100 flex justify-end">
-            <button onClick={onDeleteTeam} className="bg-white border border-slate-200  border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 uppercase text-xs tracking-widest transition-all">
+            <button onClick={onDeleteTeam} className="bg-white/60 backdrop-blur-xl border border-white/40  border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 font-black py-3 px-6 rounded-2xl flex items-center justify-center gap-2 uppercase text-xs tracking-widest transition-all">
               <Trash2 className="w-4 h-4" /> Permanently Delete Team
             </button>
           </div>
@@ -295,41 +295,41 @@ function TeamView({ players, onAddPlayer, onEditPlayer, onDeletePlayer }) {
 
   return (
     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-       <div className="flex justify-between items-center bg-white border border-slate-200  p-6 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+       <div className="flex justify-between items-center bg-white/60 backdrop-blur-xl border border-white/40  p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
          <div>
-            <h2 className="text-xl font-bold text-slate-900">Roster</h2>
-            <p className="text-[10px] font-bold text-emerald-600 tracking-wide font-medium leading-none mt-1">{players.length} Active Players</p>
+            <h2 className="text-2xl font-black text-slate-900 uppercase">Roster</h2>
+            <p className="text-[10px] font-black text-violet-600 tracking-wide font-medium leading-none mt-1">{players.length} Active Players</p>
          </div>
-         <button onClick={startAdd} className="bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 w-12 h-12 rounded-lg flex items-center justify-center shadow-lg shadow-sm active:scale-95 transition-all">
+         <button onClick={startAdd} className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:to-teal-300 shadow-md shadow-emerald-500/20 hover:-translate-y-0.5 hover:shadow-emerald-500/30 transition-all duration-300 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200 active:scale-95 transition-all">
            <Plus className="w-6 h-6" />
          </button>
        </div>
 
        {isAdding && (
-         <div className="bg-white border border-slate-200  p-6 rounded-xl border-2 border-emerald-500 shadow-md space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 tracking-wide font-medium mb-4">{editingId ? 'Edit Player' : 'New Player'}</h3>
+         <div className="bg-white/60 backdrop-blur-xl border border-white/40  p-6 rounded-3xl border-2 border-violet-500 shadow-xl space-y-4">
+            <h3 className="text-sm font-black text-slate-900 tracking-wide font-medium mb-4">{editingId ? 'Edit Player' : 'New Player'}</h3>
             <div className="grid grid-cols-4 gap-4">
                <div className="col-span-3 space-y-2">
-                 <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">Name</label>
-                 <input className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 uppercase" placeholder="Player Name" value={newPlayer.name} onChange={(e) => setNewPlayer({...newPlayer, name: e.target.value})} />
+                 <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium pl-2">Name</label>
+                 <input className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-black text-slate-700 outline-none focus:border-violet-500 uppercase" placeholder="Player Name" value={newPlayer.name} onChange={(e) => setNewPlayer({...newPlayer, name: e.target.value})} />
                </div>
                <div className="col-span-1 space-y-2">
-                 <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">#</label>
-                 <input type="number" className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 text-center" placeholder="00" value={newPlayer.number} onChange={(e) => setNewPlayer({...newPlayer, number: e.target.value})} />
+                 <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium pl-2">#</label>
+                 <input type="number" className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-black text-slate-700 outline-none focus:border-violet-500 text-center" placeholder="00" value={newPlayer.number} onChange={(e) => setNewPlayer({...newPlayer, number: e.target.value})} />
                </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="space-y-2">
-                 <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">Throws</label>
-                 <select className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 appearance-none" value={newPlayer.throws} onChange={(e) => setNewPlayer({...newPlayer, throws: e.target.value})}>
+                 <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium pl-2">Throws</label>
+                 <select className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-black text-slate-700 outline-none focus:border-violet-500 appearance-none" value={newPlayer.throws} onChange={(e) => setNewPlayer({...newPlayer, throws: e.target.value})}>
                     <option value="R">Right</option>
                     <option value="L">Left</option>
                  </select>
               </div>
               <div className="space-y-2">
-                 <label className="text-[10px] font-bold text-slate-400 tracking-wide font-medium pl-2">Bats</label>
-                 <select className="w-full bg-white/40  border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:border-emerald-500 appearance-none" value={newPlayer.bats} onChange={(e) => setNewPlayer({...newPlayer, bats: e.target.value})}>
+                 <label className="text-[10px] font-black text-slate-400 tracking-wide font-medium pl-2">Bats</label>
+                 <select className="w-full bg-white/40 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 py-3 font-black text-slate-700 outline-none focus:border-violet-500 appearance-none" value={newPlayer.bats} onChange={(e) => setNewPlayer({...newPlayer, bats: e.target.value})}>
                     <option value="R">Right</option>
                     <option value="L">Left</option>
                     <option value="S">Switch</option>
@@ -338,39 +338,39 @@ function TeamView({ players, onAddPlayer, onEditPlayer, onDeletePlayer }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
-               <button onClick={() => setNewPlayer({...newPlayer, willPitch: !newPlayer.willPitch})} className={`py-3 rounded-lg font-bold text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willPitch ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white/40  border-slate-100 text-slate-400'}`}>Pitcher</button>
-               <button onClick={() => setNewPlayer({...newPlayer, willCatch: !newPlayer.willCatch})} className={`py-3 rounded-lg font-bold text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willCatch ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white/40  border-slate-100 text-slate-400'}`}>Catcher</button>
+               <button onClick={() => setNewPlayer({...newPlayer, willPitch: !newPlayer.willPitch})} className={`py-3 rounded-2xl font-black text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willPitch ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white/40 backdrop-blur-sm border-slate-100 text-slate-400'}`}>Pitcher</button>
+               <button onClick={() => setNewPlayer({...newPlayer, willCatch: !newPlayer.willCatch})} className={`py-3 rounded-2xl font-black text-xs tracking-wide font-medium transition-all border-2 ${newPlayer.willCatch ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white/40 backdrop-blur-sm border-slate-100 text-slate-400'}`}>Catcher</button>
             </div>
 
             <div className="flex gap-4 pt-4">
-              <button onClick={() => { setIsAdding(false); setEditingId(null); }} className="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-lg uppercase text-xs tracking-widest">Cancel</button>
-              <button onClick={handleSave} className="flex-1 bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 font-bold py-3 rounded-lg uppercase text-xs tracking-widest shadow-lg shadow-sm">Save</button>
+              <button onClick={() => { setIsAdding(false); setEditingId(null); }} className="flex-1 bg-slate-100 text-slate-600 font-black py-4 rounded-2xl uppercase text-xs tracking-widest">Cancel</button>
+              <button onClick={handleSave} className="flex-1 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:to-teal-300 shadow-md shadow-emerald-500/20 hover:-translate-y-0.5 hover:shadow-emerald-500/30 transition-all duration-300 font-black py-4 rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-emerald-200">Save</button>
             </div>
          </div>
        )}
 
        <div className="space-y-3">
          {players.map(p => (
-           <div key={p.id} className="bg-white border border-slate-200  p-5 rounded-lg border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 flex items-center justify-between group">
+           <div key={p.id} className="bg-white/60 backdrop-blur-xl border border-white/40  p-5 rounded-2xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 flex items-center justify-between group">
              <div className="flex items-center gap-4">
-               <div className="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center font-bold text-emerald-600 border border-emerald-100 text-lg shadow-inner">{p.number}</div>
+               <div className="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center font-black text-violet-600 border border-violet-100 text-lg shadow-inner">{p.number}</div>
                <div>
-                  <p className="font-bold text-slate-900 text-lg uppercase tracking-tighter leading-none mb-1">{p.name}</p>
+                  <p className="font-black text-slate-900 text-lg uppercase tracking-tighter leading-none mb-1">{p.name}</p>
                   <div className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-3 mt-1 cursor-default">
                     <span className="flex items-center gap-1"><span className="text-slate-400 tracking-widest text-[10px]">Bats</span> {p.bats}</span>
                     <span className="text-slate-300">•</span>
                     <span className="flex items-center gap-1"><span className="text-slate-400 tracking-widest text-[10px]">Throws</span> {p.throws}</span>
                     {(p.willPitch || p.willCatch) && <span className="text-slate-300">•</span>}
-                    {p.willPitch && <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] tracking-widest font-bold">Pitcher</span>}
-                    {p.willCatch && <span className="bg-rose-50 text-rose-600 px-2 py-0.5 rounded text-[10px] tracking-widest font-bold">Catcher</span>}
+                    {p.willPitch && <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] tracking-widest font-black">Pitcher</span>}
+                    {p.willCatch && <span className="bg-rose-50 text-rose-600 px-2 py-0.5 rounded text-[10px] tracking-widest font-black">Catcher</span>}
                   </div>
                </div>
              </div>
              <div className="flex items-center gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all">
-               <button onClick={() => startEdit(p)} className="w-10 h-10 rounded-xl bg-white/40  text-slate-300 flex items-center justify-center hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+               <button onClick={() => startEdit(p)} className="w-10 h-10 rounded-xl bg-white/40 backdrop-blur-sm text-slate-300 flex items-center justify-center hover:bg-violet-50 hover:text-violet-600 transition-colors">
                   <Edit2 className="w-5 h-5" />
                </button>
-               <button onClick={() => onDeletePlayer(p.firebaseId, p.id)} className="w-10 h-10 rounded-xl bg-white/40  text-slate-300 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-colors">
+               <button onClick={() => onDeletePlayer(p.firebaseId, p.id)} className="w-10 h-10 rounded-xl bg-white/40 backdrop-blur-sm text-slate-300 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-colors">
                   <Trash2 className="w-5 h-5" />
                </button>
              </div>
@@ -483,24 +483,24 @@ export default function DugoutHeroCore({
   };
 
   if (isLoadingData) return (
-    <div className="min-h-screen bg-white/40  flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen bg-white/40 backdrop-blur-sm flex flex-col items-center justify-center p-8">
       <GreenDiamondLogo />
-      <div className="w-16 h-16 border-[6px] border-emerald-600 border-t-transparent rounded-full animate-spin mt-4"></div>
+      <div className="w-16 h-16 border-[6px] border-violet-600 border-t-transparent rounded-full animate-spin mt-4"></div>
     </div>
   );
 
   return (
     <>
-      <div className="min-h-screen bg-white/40  font-sans text-slate-900 pb-24 no-print relative w-full h-full max-h-screen overflow-y-auto">
-        <header className="bg-white  border-b border-slate-200 sticky top-0 z-50 px-4 py-3 shadow-sm">
+      <div className="min-h-screen bg-white/40 backdrop-blur-sm font-sans text-slate-900 pb-24 no-print relative w-full h-full max-h-screen overflow-y-auto">
+        <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 px-4 py-5 shadow-sm">
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-1">
               {selectedGameId ? (
-                <button onClick={() => setSelectedGameId(null)} className="p-2 hover:bg-slate-100 rounded-lg text-emerald-600"><ChevronLeft className="w-7 h-7" /></button>
+                <button onClick={() => setSelectedGameId(null)} className="p-2 hover:bg-slate-100 rounded-2xl text-violet-600"><ChevronLeft className="w-7 h-7" /></button>
               ) : (
                 <div className="flex items-center">
                   <GreenDiamondLogo />
-                  <h1 className="text-2xl font-semibold tracking-tight leading-none">
+                  <h1 className="text-2xl font-black tracking-tighter uppercase leading-none">
                      {HeaderBadge ? 'Lineup Hero PRO' : 'Lineup Hero'}
                   </h1>
                 </div>
@@ -512,10 +512,10 @@ export default function DugoutHeroCore({
 
         <main className="max-w-3xl mx-auto p-4">
           {activeTab === 'home' && (
-            <div className="bg-white border border-slate-200  rounded-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+            <div className="bg-white/60 backdrop-blur-xl border border-white/40  rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
               <div className="flex justify-between items-center mb-8">
-                <h2 className="text-xl font-bold text-slate-900">Batting Order Average</h2>
-                <div className="bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase">Target: {((seasonConfig.rosterSize || 12) / 2) - 1} - {((seasonConfig.rosterSize || 12) / 2) + 0.75}</div>
+                <h2 className="text-2xl font-black text-slate-900 uppercase">Batting Order Average</h2>
+                <div className="bg-violet-50 text-violet-600 px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase">Target: {((seasonConfig.rosterSize || 12) / 2) - 1} - {((seasonConfig.rosterSize || 12) / 2) + 0.75}</div>
               </div>
               <div className="space-y-4">
                 {seasonStats.map(p => {
@@ -525,13 +525,13 @@ export default function DugoutHeroCore({
                   return (
                     <div key={p.id} className="flex items-center justify-between border-b border-slate-50 pb-4">
                        <div className="flex items-center gap-4 text-left">
-                          <div className="w-12 h-12 rounded-lg bg-white/40  flex items-center justify-center font-bold text-slate-400 border border-slate-100">{p.number}</div>
+                          <div className="w-12 h-12 rounded-2xl bg-white/40 backdrop-blur-sm flex items-center justify-center font-black text-slate-400 border border-slate-100">{p.number}</div>
                           <div>
                             <p className="font-bold text-slate-900 leading-none mb-1">{p.name}</p>
                             <p className="text-[10px] text-slate-400 font-bold tracking-wide">{p.gameCount} Games Active</p>
                           </div>
                        </div>
-                       <p className={`text-2xl font-bold ${isOptimal ? 'text-emerald-600' : 'text-rose-500'}`}>{p.avg.toFixed(1)}</p>
+                       <p className={`text-2xl font-black ${isOptimal ? 'text-violet-600' : 'text-rose-500'}`}>{p.avg.toFixed(1)}</p>
                     </div>
                   );
                 })}
@@ -545,23 +545,23 @@ export default function DugoutHeroCore({
                 const formattedDate = new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).format(new Date());
                 const newGame = { id: Date.now(), opponent: "New Opponent", date: formattedDate, time: "6:00 PM", location: "Field 1", isHome: true, absentPlayerIds: [], battingOrder: {}, field: {} };
                 onAddGame(newGame);
-              }} className="w-full bg-blue-600 hover:bg-blue-700 transition-colors hover:from-emerald-400  text-white font-bold py-3 rounded-lg shadow-lg shadow-sm hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-2 uppercase text-sm tracking-widest active:scale-95 transition-all"><Plus /> New Game</button>
+              }} className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-400 hover:to-fuchsia-400 text-white font-black py-5 rounded-2xl shadow-lg shadow-emerald-500/30 hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-2 uppercase text-sm tracking-widest active:scale-95 transition-all"><Plus /> New Game</button>
               {games.map((g, index) => (
-                <button key={g.id} onClick={() => setSelectedGameId(g.id)} className="w-full bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 flex items-center justify-between hover:border-emerald-400 transition-all text-left group">
+                <button key={g.id} onClick={() => setSelectedGameId(g.id)} className="w-full bg-white/60 backdrop-blur-xl border border-white/40  p-6 rounded-3xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 flex items-center justify-between hover:border-violet-400 transition-all text-left group">
                   <div>
-                     <p className="text-[10px] font-bold text-emerald-600 tracking-wide font-medium mb-1 flex items-center gap-2">
+                     <p className="text-[10px] font-black text-violet-600 tracking-wide font-medium mb-1 flex items-center gap-2">
                        <span>Game {index + 1}</span>
                        <span className="text-slate-300">•</span>
                        <span className={`${g.isHome ? 'text-blue-500' : 'text-slate-400'}`}>{g.isHome ? 'Home' : 'Away'}</span>
                      </p>
-                     <p className="font-bold text-slate-900 text-xl tracking-tighter uppercase mb-1">{g.opponent}</p>
+                     <p className="font-black text-slate-900 text-xl tracking-tighter uppercase mb-1">{g.opponent}</p>
                      <p className="text-xs font-bold text-slate-400 tracking-wide font-medium flex items-center gap-2">
                         <span>{g.date || 'TBD Date'}</span>
                         <span className="w-1 h-1 rounded-full bg-slate-200"></span>
                         <span>{g.time || 'TBD Time'}</span>
                      </p>
                   </div>
-                  <div className="w-10 h-10 rounded-lg bg-white/40  flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
+                  <div className="w-10 h-10 rounded-2xl bg-white/40 backdrop-blur-sm flex items-center justify-center group-hover:bg-violet-50 transition-colors">
                     <ChevronRight className="text-slate-300 w-5 h-5 group-hover:text-emerald-500 transition-colors" />
                   </div>
                 </button>
@@ -571,25 +571,25 @@ export default function DugoutHeroCore({
 
           {selectedGameId && (
              <div className="space-y-4">
-                <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-4 animate-in slide-in-from-top-4 duration-500">
+                <div className="bg-white/60 backdrop-blur-xl border border-white/40  p-6 rounded-3xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-4 animate-in slide-in-from-top-4 duration-500">
                   <div className="flex items-center justify-between border-b border-slate-50 pb-4">
                     <div className="flex items-center gap-4">
-                       <button onClick={() => onUpdateGame(selectedGame.firebaseId, { isHome: !selectedGame.isHome })} className={`px-4 py-2 rounded-xl text-[10px] font-bold tracking-wide transition-all ${selectedGame.isHome ? 'bg-emerald-50 text-emerald-600' : 'bg-white/40  text-slate-400'}`}>
+                       <button onClick={() => onUpdateGame(selectedGame.firebaseId, { isHome: !selectedGame.isHome })} className={`px-4 py-2 rounded-xl text-[10px] font-bold tracking-wide transition-all ${selectedGame.isHome ? 'bg-violet-50 text-violet-600' : 'bg-white/40 backdrop-blur-sm text-slate-400'}`}>
                          {selectedGame.isHome ? 'Home' : 'Away'}
                        </button>
-                       <input className="font-bold text-2xl text-slate-900 uppercase tracking-tighter w-full outline-none placeholder:text-slate-300" placeholder="Opponent Name" value={selectedGame.opponent} onChange={(e) => onUpdateGame(selectedGame.firebaseId, { opponent: e.target.value })} />
+                       <input className="font-black text-2xl text-slate-900 uppercase tracking-tighter w-full outline-none placeholder:text-slate-300" placeholder="Opponent Name" value={selectedGame.opponent} onChange={(e) => onUpdateGame(selectedGame.firebaseId, { opponent: e.target.value })} />
                     </div>
                     <button onClick={() => {
                        if(window.confirm('Delete this game?')) {
                           onDeleteGame(selectedGame.firebaseId);
                           setSelectedGameId(null);
                        }
-                    }} className="w-10 h-10 rounded-xl bg-white/40  text-slate-300 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-colors">
+                    }} className="w-10 h-10 rounded-xl bg-white/40 backdrop-blur-sm text-slate-300 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-colors">
                        <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="flex items-center gap-3 bg-white/40  p-3 rounded-lg border border-slate-100 focus-within:border-emerald-500 focus-within:bg-white border border-slate-200  transition-all relative">
+                    <div className="flex items-center gap-3 bg-white/40 backdrop-blur-sm p-3 rounded-2xl border border-slate-100 focus-within:border-violet-500 focus-within:bg-white/60 backdrop-blur-xl border border-white/40  transition-all relative">
                        <CalendarDays className="w-4 h-4 text-slate-400 shrink-0 cursor-pointer" />
                        <input type="date" className="absolute left-3 w-4 h-4 opacity-0 cursor-pointer" onChange={(e) => {
                          if (e.target.value) {
@@ -599,31 +599,31 @@ export default function DugoutHeroCore({
                        }} />
                        <input className="bg-transparent font-bold text-slate-700 outline-none w-full text-sm placeholder:text-slate-300" placeholder="Date (e.g. Oct 12)" value={selectedGame.date || ''} onChange={(e) => onUpdateGame(selectedGame.firebaseId, { date: e.target.value })} />
                     </div>
-                    <div className="flex items-center gap-3 bg-white/40  p-3 rounded-lg border border-slate-100 focus-within:border-emerald-500 focus-within:bg-white border border-slate-200  transition-all">
+                    <div className="flex items-center gap-3 bg-white/40 backdrop-blur-sm p-3 rounded-2xl border border-slate-100 focus-within:border-violet-500 focus-within:bg-white/60 backdrop-blur-xl border border-white/40  transition-all">
                        <Clock className="w-4 h-4 text-slate-400 shrink-0" />
                        <input className="bg-transparent font-bold text-slate-700 outline-none w-full text-sm placeholder:text-slate-300" placeholder="Time (e.g. 6:00 PM)" value={selectedGame.time || ''} onChange={(e) => onUpdateGame(selectedGame.firebaseId, { time: e.target.value })} />
                     </div>
-                    <div className="flex items-center gap-3 bg-white/40  p-3 rounded-lg border border-slate-100 focus-within:border-emerald-500 focus-within:bg-white border border-slate-200  transition-all">
+                    <div className="flex items-center gap-3 bg-white/40 backdrop-blur-sm p-3 rounded-2xl border border-slate-100 focus-within:border-violet-500 focus-within:bg-white/60 backdrop-blur-xl border border-white/40  transition-all">
                        <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
                        <input className="bg-transparent font-bold text-slate-700 outline-none w-full text-sm placeholder:text-slate-300" placeholder="Location" value={selectedGame.location || ''} onChange={(e) => onUpdateGame(selectedGame.firebaseId, { location: e.target.value })} />
                     </div>
                   </div>
                 </div>
 
-                <div className="flex gap-2 p-2 bg-white border border-slate-200  rounded-xl border border-slate-100 shadow-sm">
+                <div className="flex gap-2 p-2 bg-white/60 backdrop-blur-xl border border-white/40  rounded-3xl border border-slate-100 shadow-sm">
                    {['matrix', 'order', 'preview'].map(t => (
-                     <button key={t} onClick={() => setGameSubTab(t)} className={`flex-1 py-3 rounded-lg font-bold text-[10px] tracking-wide font-medium transition-all ${gameSubTab === t ? 'bg-blue-600 hover:bg-blue-700 transition-colors text-white  shadow-md shadow-sm hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300 shadow-lg' : 'text-slate-400 bg-white/40 '}`}>{t === 'matrix' ? 'Fielding' : t === 'order' ? 'Batting' : 'Sheet'}</button>
+                     <button key={t} onClick={() => setGameSubTab(t)} className={`flex-1 py-3 rounded-2xl font-black text-[10px] tracking-wide font-medium transition-all ${gameSubTab === t ? 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:to-teal-300 shadow-md shadow-emerald-500/20 hover:-translate-y-0.5 hover:shadow-emerald-500/30 transition-all duration-300 shadow-lg' : 'text-slate-400 bg-white/40 backdrop-blur-sm'}`}>{t === 'matrix' ? 'Fielding' : t === 'order' ? 'Batting' : 'Sheet'}</button>
                    ))}
                 </div>
 
                 {gameSubTab === 'matrix' && (
-                  <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-6 animate-in slide-in-from-left-4 duration-300">
+                  <div className="bg-white/60 backdrop-blur-xl border border-white/40  p-6 rounded-3xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-6 animate-in slide-in-from-left-4 duration-300">
                     <div className="flex items-center justify-between">
                        <div>
-                          <h3 className="text-xl font-bold text-slate-900">Fielding Rotation</h3>
+                          <h3 className="text-xl font-black text-slate-900 uppercase">Fielding Rotation</h3>
                           <p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium">Assign defensive positions</p>
                        </div>
-                       <button onClick={autoGenerateField} className="bg-blue-50 text-blue-600 px-4 py-3 rounded-lg text-[10px] font-bold tracking-wide flex items-center gap-2 hover:bg-blue-100 transition-colors active:scale-95">
+                       <button onClick={autoGenerateField} className="bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl text-[10px] font-bold tracking-wide flex items-center gap-2 hover:bg-blue-100 transition-colors active:scale-95">
                          <Wand2 className="w-4 h-4" /> Auto-Balance
                        </button>
                     </div>
@@ -631,7 +631,7 @@ export default function DugoutHeroCore({
                       <table className="w-full min-w-[600px] border-separate border-spacing-y-2">
                          <thead>
                            <tr>
-                             <th className="text-left py-2 px-4 text-[10px] font-bold text-slate-400 tracking-wide font-medium">Player</th>
+                             <th className="text-left py-2 px-4 text-[10px] font-black text-slate-400 tracking-wide font-medium">Player</th>
                              {Array.from({ length: seasonConfig.innings || 6 }).map((_, inn) => {
                                const assignmentsThisInning = Object.values(selectedGame.field?.[inn] || {});
                                const missingPositions = activePositions.filter(pos => !assignmentsThisInning.includes(pos.id)).map(p => p.id);
@@ -655,11 +655,11 @@ export default function DugoutHeroCore({
                                           ? (selectedGame.absentPlayerIds || []).filter(id => id !== p.id)
                                           : [...(selectedGame.absentPlayerIds || []), p.id];
                                         onUpdateGame(selectedGame.firebaseId, { absentPlayerIds: nextAbsent });
-                                      }} className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isAbsent ? 'bg-rose-100 text-rose-500' : 'bg-emerald-100 text-emerald-600'}`}>
+                                      }} className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isAbsent ? 'bg-rose-100 text-rose-500' : 'bg-emerald-100 text-violet-600'}`}>
                                         {isAbsent ? <X className="w-4 h-4" /> : <Check className="w-4 h-4" />}
                                       </button>
                                       <div>
-                                        <p className="font-bold text-sm text-slate-900 uppercase leading-none">{p.name}</p>
+                                        <p className="font-black text-sm text-slate-900 uppercase leading-none">{p.name}</p>
                                         <div className="flex items-center gap-1 mt-1">
                                           <p className="text-[10px] font-bold text-slate-400 leading-none">#{p.number}</p>
                                           {p.willPitch && <span className="text-[8px] bg-blue-50 text-blue-600 px-1 py-0.5 rounded-sm font-bold tracking-wide leading-none">P</span>}
@@ -677,13 +677,13 @@ export default function DugoutHeroCore({
                                      isConflict = assignmentsThisInning.filter(pos => pos === currentPos).length > 1;
                                    }
 
-                                   let dropdownStyle = 'bg-white border border-slate-200  border-slate-100 text-slate-300';
+                                   let dropdownStyle = 'bg-white/60 backdrop-blur-xl border border-white/40  border-slate-100 text-slate-300';
                                    if (currentPos === 'Bench') {
                                       dropdownStyle = 'bg-slate-100 border-slate-200 text-slate-400';
                                    } else if (isConflict) {
                                       dropdownStyle = 'bg-rose-50 border-rose-500 text-rose-700 shadow-sm animate-pulse';
                                    } else if (currentPos) {
-                                      dropdownStyle = 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm';
+                                      dropdownStyle = 'bg-violet-50 border-violet-500 text-emerald-700 shadow-sm';
                                    }
 
                                    return (
@@ -697,7 +697,7 @@ export default function DugoutHeroCore({
                                             newField[inn][p.id] = e.target.value;
                                             onUpdateGame(selectedGame.firebaseId, { field: newField });
                                           }}
-                                          className={`w-full appearance-none text-center py-3 rounded-lg font-bold text-xs outline-none transition-colors border-2 ${dropdownStyle}`}
+                                          className={`w-full appearance-none text-center py-3 rounded-2xl font-black text-xs outline-none transition-colors border-2 ${dropdownStyle}`}
                                        >
                                           <option value="">--</option>
                                           {activePositions.map(pos => <option key={pos.id} value={pos.id}>{pos.id}</option>)}
@@ -716,13 +716,13 @@ export default function DugoutHeroCore({
                 )}
 
                 {gameSubTab === 'order' && (
-                  <div className="bg-white border border-slate-200  p-6 rounded-xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-6 animate-in slide-in-from-right-4 duration-300">
+                  <div className="bg-white/60 backdrop-blur-xl border border-white/40  p-6 rounded-3xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.1)] transition-all duration-300 space-y-6 animate-in slide-in-from-right-4 duration-300">
                     <div className="flex items-center justify-between">
                        <div>
-                          <h3 className="text-xl font-bold text-slate-900">Batting Order</h3>
+                          <h3 className="text-xl font-black text-slate-900 uppercase">Batting Order</h3>
                           <p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium">Set your lineup (1-{Math.max(playersPresent.length, seasonConfig.rosterSize || 15)})</p>
                        </div>
-                       <button onClick={autoGenerateOrder} className="bg-blue-50 text-blue-600 px-4 py-3 rounded-lg text-[10px] font-bold tracking-wide flex items-center gap-2 hover:bg-blue-100 transition-colors active:scale-95">
+                       <button onClick={autoGenerateOrder} className="bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl text-[10px] font-bold tracking-wide flex items-center gap-2 hover:bg-blue-100 transition-colors active:scale-95">
                          <Wand2 className="w-4 h-4" /> Auto-Balance
                        </button>
                     </div>
@@ -756,10 +756,10 @@ export default function DugoutHeroCore({
                                
                                onUpdateGame(selectedGame.firebaseId, { battingOrder: newOrder });
                              }}
-                             className="flex gap-4 items-center bg-white/40  p-3 rounded-lg border border-slate-100 cursor-move hover:border-emerald-300 hover:shadow-md transition-all group"
+                             className="flex gap-4 items-center bg-white/40 backdrop-blur-sm p-3 rounded-2xl border border-slate-100 cursor-move hover:border-violet-300 hover:shadow-md transition-all group"
                            >
                               <GripVertical className="w-5 h-5 text-slate-300 group-hover:text-emerald-500 transition-colors" />
-                              <div className="w-6 text-center font-bold text-slate-300 text-xl">{idx + 1}</div>
+                              <div className="w-6 text-center font-black text-slate-300 text-xl">{idx + 1}</div>
                               <select 
                                  value={pId || ''}
                                  onChange={(e) => {
@@ -768,7 +768,7 @@ export default function DugoutHeroCore({
                                    else newOrder[idx + 1] = e.target.value;
                                    onUpdateGame(selectedGame.firebaseId, { battingOrder: newOrder });
                                  }}
-                                 className="flex-1 bg-white border border-slate-200  border border-slate-200 rounded-xl px-4 py-3 font-bold text-sm uppercase text-slate-700 outline-none focus:border-emerald-500 appearance-none shadow-sm"
+                                 className="flex-1 bg-white/60 backdrop-blur-xl border border-white/40  border border-slate-200 rounded-xl px-4 py-3 font-black text-sm uppercase text-slate-700 outline-none focus:border-violet-500 appearance-none shadow-sm"
                               >
                                  <option value="">-- Empty Slot --</option>
                                  {playersPresent.map(p => {
@@ -778,8 +778,8 @@ export default function DugoutHeroCore({
                               </select>
                               {statObj && (
                                  <div className="w-20 text-right pr-2 hidden sm:block">
-                                    <p className="text-[10px] font-semibold text-slate-400 tracking-widest">Avg</p>
-                                    <p className={`font-bold text-sm ${Math.abs(diff) < 1.2 ? 'text-emerald-500' : 'text-rose-400'}`}>{statObj.avg.toFixed(1)}</p>
+                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Avg</p>
+                                    <p className={`font-black text-sm ${Math.abs(diff) < 1.2 ? 'text-emerald-500' : 'text-rose-400'}`}>{statObj.avg.toFixed(1)}</p>
                                  </div>
                               )}
                            </div>
@@ -791,16 +791,16 @@ export default function DugoutHeroCore({
 
                 {gameSubTab === 'preview' && (
                   <div className="animate-in slide-in-from-right-4 duration-300">
-                    <div className="flex justify-between items-center bg-blue-600 p-6 rounded-xl shadow-md mb-4">
-                      <div><p className="text-white font-semibold text-sm leading-none">Lineup Sheet</p><p className="text-blue-200 text-[10px] font-bold uppercase mt-1">Ready for Print</p></div>
-                      <button onClick={() => window.print()} className="bg-white border border-slate-200  text-blue-600 px-6 py-3 rounded-lg font-bold text-xs shadow-lg active:scale-90 transition-all flex items-center gap-2"><Printer className="w-4 h-4" /> EXPORT PDF</button>
+                    <div className="flex justify-between items-center bg-blue-600 p-6 rounded-3xl shadow-xl mb-4">
+                      <div><p className="text-white font-black uppercase text-sm leading-none">Lineup Sheet</p><p className="text-blue-200 text-[10px] font-bold uppercase mt-1">Ready for Print</p></div>
+                      <button onClick={() => window.print()} className="bg-white/60 backdrop-blur-xl border border-white/40  text-blue-600 px-6 py-3 rounded-2xl font-black text-xs shadow-lg active:scale-90 transition-all flex items-center gap-2"><Printer className="w-4 h-4" /> EXPORT PDF</button>
                     </div>
                     <PrintView selectedGame={selectedGame} players={players} seasonConfig={seasonConfig} inline={true} />
                   </div>
                 )}
 
                 <div className="pt-4 pb-2">
-                  <button onClick={() => setSelectedGameId(null)} className="w-full bg-blue-600 hover:bg-blue-700 transition-colors hover:from-emerald-400  text-white font-bold py-3 rounded-md shadow-lg shadow-sm hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-2 uppercase text-sm tracking-widest active:scale-95 transition-all">
+                  <button onClick={() => setSelectedGameId(null)} className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-400 hover:to-fuchsia-400 text-white font-black py-5 rounded-3xl shadow-lg shadow-emerald-500/30 hover:-translate-y-1 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-2 uppercase text-sm tracking-widest active:scale-95 transition-all">
                     <CheckCircle2 className="w-6 h-6" /> Save Game
                   </button>
                 </div>
@@ -812,14 +812,14 @@ export default function DugoutHeroCore({
           {activeTab === 'team' && <TeamView players={players} onAddPlayer={onAddPlayer} onEditPlayer={onEditPlayer} onDeletePlayer={onDeletePlayer} />}
         </main>
 
-        <nav className="fixed bottom-0 left-0 right-0 max-w-3xl mx-auto bg-white border-t border-slate-200 py-3 px-6 flex justify-around items-center z-[60] shadow-lg no-print">
+        <nav className="fixed bottom-0 left-0 right-0 max-w-3xl mx-auto bg-white/90 backdrop-blur-xl border-t border-slate-200 py-4 px-6 flex justify-around items-center z-[60] shadow-lg no-print">
           {[
             {t:'games', i:ClipboardList, l:'Games'}, 
             {t:'team', i:Users, l:'Team'}, 
             ...(seasonConfig.enableTrends !== false ? [{t:'home', i:BarChart3, l:'Lineup Trends'}] : []), 
             {t:'settings', i:SettingsIcon, l:'Setup'}
           ].map(tab => (
-            <button key={tab.t} onClick={() => { setActiveTab(tab.t); setSelectedGameId(null); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === tab.t ? 'text-emerald-600 scale-110' : 'text-slate-300'}`}>
+            <button key={tab.t} onClick={() => { setActiveTab(tab.t); setSelectedGameId(null); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === tab.t ? 'text-violet-600 scale-110' : 'text-slate-300'}`}>
               <tab.i className="w-8 h-8" />
               <span className="text-[10px] font-bold tracking-wide leading-none">{tab.l}</span>
             </button>
