@@ -37,6 +37,8 @@ export default function ProDashboard() {
   const isLeagueOwner = ownedLeagues.length > 0;
   const isDivisionAdmin = !isLeagueOwner && ownedDivisions.length > 0;
   const isCoach = !isLeagueOwner && !isDivisionAdmin && teams.length > 0;
+  // New user: logged in but no data yet — should be able to create a league
+  const isNewUser = !isLeagueOwner && !isDivisionAdmin && !isCoach && !isSuperAdmin();
 
   useEffect(() => {
     if (!currentUser) {
@@ -406,15 +408,24 @@ export default function ProDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              {isLeagueOwner ? 'League Dashboard' : isDivisionAdmin ? 'Division Dashboard' : 'My Dashboard'}
+              {isLeagueOwner ? 'League Dashboard' : isDivisionAdmin ? 'Division Dashboard' : isNewUser ? 'Welcome to Dugout Hero' : 'My Dashboard'}
             </h1>
             <p className="text-sm text-gray-500 mt-0.5">
               {isLeagueOwner && `${ownedLeagues.length} league${ownedLeagues.length !== 1 ? 's' : ''} · ${ownedDivisions.length} division${ownedDivisions.length !== 1 ? 's' : ''} · ${teams.length} team${teams.length !== 1 ? 's' : ''}`}
               {isDivisionAdmin && `Managing ${ownedDivisions.length} division${ownedDivisions.length !== 1 ? 's' : ''} · ${teams.length} team${teams.length !== 1 ? 's' : ''}`}
               {isCoach && `Managing ${teams.length} team${teams.length !== 1 ? 's' : ''}`}
+              {isNewUser && "Let's get your league set up. Start by creating your first league."}
               {isSuperAdmin() && !isLeagueOwner && !isDivisionAdmin && !isCoach && 'Super Admin — full data access'}
             </p>
           </div>
+          {isNewUser && (
+            <button
+              onClick={() => setIsCreatingLeague(true)}
+              className="bg-green-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-green-700 transition flex items-center gap-2 shadow-sm"
+            >
+              <Plus className="w-4 h-4" /> Create Your League
+            </button>
+          )}
         </div>
 
         {/* ── Dev debug strip (remove after confirming permissions) ── */}
@@ -429,7 +440,7 @@ export default function ProDashboard() {
         )}
 
         {/* ── My Leagues ── */}
-        {(isLeagueOwner || isSuperAdmin()) && (
+        {(isLeagueOwner || isNewUser || isSuperAdmin()) && (
           <section>
             {/* Section header */}
             <div className="flex items-center justify-between mb-5">
@@ -438,19 +449,24 @@ export default function ProDashboard() {
                 <h2 className="text-base font-semibold text-gray-900">My Leagues</h2>
                 <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">{ownedLeagues.length}</span>
               </div>
-              {(isLeagueOwner || isSuperAdmin()) && (
+              {(isLeagueOwner || isNewUser || isSuperAdmin()) && (
                 <button onClick={() => setIsCreatingLeague(true)} className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-xs hover:bg-green-700 transition flex items-center gap-1.5 shadow-sm">
                   <Plus className="w-3.5 h-3.5" /> New League
                 </button>
               )}
             </div>
 
-            {ownedLeagues.length === 0 && isSuperAdmin() ? (
-              <div className="bg-white border border-dashed border-gray-200 rounded-xl p-10 text-center">
-                <Trophy className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-                <h3 className="text-sm font-semibold text-gray-600 mb-1">No Leagues Yet</h3>
-                <p className="text-xs text-gray-400 mb-4">Create a league to manage divisions and teams.</p>
-                <button onClick={() => setIsCreatingLeague(true)} className="bg-green-100 text-green-800 px-5 py-2 rounded-lg font-semibold text-sm hover:bg-green-200 transition">Create Your First League</button>
+            {ownedLeagues.length === 0 ? (
+              <div className="bg-white border-2 border-dashed border-green-200 rounded-xl p-12 text-center">
+                <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Trophy className="w-7 h-7 text-green-600" />
+                </div>
+                <h3 className="text-base font-bold text-gray-800 mb-1">No Leagues Yet</h3>
+                <p className="text-sm text-gray-400 mb-5">Create your first league to get started. You'll set up divisions, teams, and settings all in one go.</p>
+                <button
+                  onClick={() => setIsCreatingLeague(true)}
+                  className="bg-green-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-green-700 transition shadow-sm"
+                >Create Your First League</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
