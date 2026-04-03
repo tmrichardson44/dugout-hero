@@ -10,6 +10,9 @@ const STEPS = [
   { id: 4, label: 'Review',   icon: CheckCircle2 },
 ];
 
+const SEASONS = ['Spring', 'Summer', 'Fall', 'Winter'];
+const YEARS   = Array.from({ length: 20 }, (_, i) => String(2026 + i));
+
 function Stepper({ value, min, max, onChange }) {
   return (
     <div className="flex items-center gap-3">
@@ -25,10 +28,10 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
   const [saving, setSaving] = useState(false);
   const [error, setError]   = useState('');
 
-  // ── Step 1 ─────────────────────────────────────────────────────────────────
+  // ── Step 1 ──────────────────────────────────────────────────────────────────
   const [divisionName, setDivisionName] = useState('');
 
-  // ── Step 2 ─────────────────────────────────────────────────────────────────
+  // ── Step 2 ──────────────────────────────────────────────────────────────────
   const [teamCount, setTeamCount] = useState(4);
   const [teamNames,  setTeamNames]  = useState(['','','','']);
 
@@ -42,17 +45,19 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
     });
   };
 
-  // ── Step 3 ─────────────────────────────────────────────────────────────────
+  // ── Step 3 ──────────────────────────────────────────────────────────────────
   const [rosterSize,    setRosterSize]    = useState(12);
   const [innings,       setInnings]       = useState(6);
   const [battingTarget, setBattingTarget] = useState(6.5);
+  const [season,        setSeason]        = useState('Spring');
+  const [year,          setYear]          = useState(String(new Date().getFullYear()));
 
   const canNext = () => {
     if (step === 1) return divisionName.trim().length >= 1;
     return true;
   };
 
-  // ── Create ──────────────────────────────────────────────────────────────────
+  // ── Create ───────────────────────────────────────────────────────────────────
   const handleCreate = async () => {
     setSaving(true);
     setError('');
@@ -62,6 +67,8 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
         leagueId,
         adminUid: currentUser.uid,
         adminEmail: currentUser.email,
+        season,
+        year,
         createdAt: serverTimestamp(),
       });
 
@@ -72,12 +79,16 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
           leagueId,
           divisionId: divRef.id,
           managerUid: currentUser.uid,
+          season,
+          year,
           createdAt: serverTimestamp(),
           seasonSettings: {
             teamName: tName,
             rosterSize,
             innings,
             battingTarget,
+            season,
+            year,
             enableTrends: true,
             enabledPositions: ['P','C','1B','2B','3B','SS','LF','LC','CF','RC','RF'],
           },
@@ -96,22 +107,22 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
       <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
         {/* ── Header ── */}
-        <div className="bg-slate-700 px-8 py-5 flex items-center justify-between shrink-0">
+        <div className="bg-green-800 px-8 py-5 flex items-center justify-between shrink-0">
           <div>
             <h2 className="text-lg font-bold text-white tracking-wide uppercase">New Division Setup</h2>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <Trophy className="w-3 h-3 text-blue-300" />
-              <p className="text-slate-300 text-[11px] font-bold">{leagueName}</p>
+              <Trophy className="w-3 h-3 text-amber-400" />
+              <p className="text-green-300 text-[11px] font-bold">{leagueName}</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 bg-slate-600 text-white rounded-full flex items-center justify-center hover:bg-slate-500 transition">
+          <button onClick={onClose} className="w-8 h-8 bg-green-700/60 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* ── Progress bar ── */}
-        <div className="h-1 bg-slate-100 shrink-0">
-          <div className="h-full bg-slate-700 transition-all duration-500" style={{ width: `${((step - 1) / (STEPS.length - 1)) * 100}%` }} />
+        <div className="h-1 bg-green-100 shrink-0">
+          <div className="h-full bg-green-600 transition-all duration-500" style={{ width: `${((step - 1) / (STEPS.length - 1)) * 100}%` }} />
         </div>
 
         {/* ── Step tabs ── */}
@@ -122,7 +133,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
             const active = step === s.id;
             return (
               <div key={s.id} className={`flex items-center gap-1.5 py-3 border-b-2 transition-all text-[10px] font-bold uppercase tracking-wide
-                ${active ? 'border-slate-700 text-slate-700' : done ? 'border-emerald-400 text-emerald-500' : 'border-transparent text-slate-300'}`}>
+                ${active ? 'border-green-600 text-green-700' : done ? 'border-emerald-400 text-emerald-500' : 'border-transparent text-slate-300'}`}>
                 <Icon className="w-3.5 h-3.5" />
                 <span className="hidden sm:block">{s.label}</span>
               </div>
@@ -143,7 +154,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
               <input
                 type="text"
                 autoFocus
-                className="w-full border-2 border-slate-200 rounded-xl px-5 py-4 font-bold text-slate-800 text-xl outline-none focus:border-slate-500 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300 placeholder:text-base"
+                className="w-full border-2 border-slate-200 rounded-xl px-5 py-4 font-bold text-slate-800 text-xl outline-none focus:border-green-500 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300 placeholder:text-base"
                 placeholder="e.g. Majors"
                 value={divisionName}
                 onChange={e => setDivisionName(e.target.value)}
@@ -167,7 +178,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
                       <label className="block text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1.5">Team {ti + 1}</label>
                       <input
                         type="text"
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 text-sm outline-none focus:border-slate-500 focus:bg-slate-50 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300"
+                        className="w-full border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 text-sm outline-none focus:border-green-500 focus:bg-green-50 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300"
                         placeholder={`${divisionName || 'Division'} Team ${ti + 1}`}
                         value={teamNames[ti] || ''}
                         onChange={e => setTeamNames(prev => prev.map((n, k) => k === ti ? e.target.value : n))}
@@ -183,9 +194,42 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
           {step === 3 && (
             <div className="space-y-7">
               <div>
-                <h3 className="text-2xl font-bold text-slate-800">Default Team Settings</h3>
+                <h3 className="text-2xl font-bold text-slate-800">Season & Team Settings</h3>
                 <p className="text-slate-400 text-sm font-bold mt-1">Applied to all {teamCount} teams. Adjustable per-team later.</p>
               </div>
+
+              {/* Season + Year */}
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 tracking-widest uppercase mb-3">Season</label>
+                  <div className="flex flex-wrap gap-2">
+                    {SEASONS.map(s => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setSeason(s)}
+                        className={`px-4 py-2 rounded-lg font-bold text-sm border transition-all ${
+                          season === s
+                            ? 'bg-green-600 text-white border-green-600 shadow-sm'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+                        }`}
+                      >{s}</button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 tracking-widest uppercase mb-3">Year</label>
+                  <select
+                    value={year}
+                    onChange={e => setYear(e.target.value)}
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 outline-none focus:border-green-500 transition-all bg-white"
+                  >
+                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Roster / Innings / Batting */}
               <div className="grid grid-cols-3 gap-8">
                 <div>
                   <label className="block text-xs font-bold text-slate-400 tracking-widest uppercase mb-3">Roster Size</label>
@@ -207,6 +251,10 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
                   <p className="text-[10px] text-slate-400 font-bold mt-2">avg batting pos.</p>
                 </div>
               </div>
+
+              <div className="bg-green-50 border border-green-100 rounded-xl p-4">
+                <p className="text-xs font-bold text-green-700">{season} {year} · {rosterSize} players · {innings} innings · target {battingTarget}</p>
+              </div>
             </div>
           )}
 
@@ -219,16 +267,16 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
               </div>
 
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
-                <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wide">
-                  <Trophy className="w-3 h-3 text-blue-400" /> {leagueName}
+                <div className="flex items-center gap-2 text-[10px] font-bold text-amber-600 uppercase tracking-wide">
+                  <Trophy className="w-3 h-3" /> {leagueName}
                 </div>
                 <div className="flex items-center gap-3 pl-4">
-                  <div className="w-8 h-8 bg-slate-200 text-slate-600 rounded-lg flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
                     <Layers className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="font-bold text-slate-800 uppercase tracking-tight">{divisionName}</p>
-                    <p className="text-[10px] text-slate-400 font-bold">{teamCount} teams</p>
+                    <p className="text-[10px] text-slate-400 font-bold">{season} {year} · {teamCount} teams</p>
                   </div>
                 </div>
                 {teamCount > 0 && (
@@ -247,6 +295,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
 
               <div className="flex gap-3 flex-wrap">
                 {[
+                  { label: 'Season', val: `${season} ${year}` },
                   { label: 'Roster', val: `${rosterSize} players` },
                   { label: 'Innings', val: innings },
                   { label: 'Batting target', val: battingTarget },
@@ -275,7 +324,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
             <button
               onClick={() => canNext() && setStep(s => s + 1)}
               disabled={!canNext()}
-              className="bg-slate-700 text-white px-7 py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-slate-200"
+              className="bg-green-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:bg-green-700 transition flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-green-100"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>
@@ -283,7 +332,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
             <button
               onClick={handleCreate}
               disabled={saving}
-              className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-emerald-700 transition flex items-center gap-2 disabled:opacity-50 shadow-md shadow-emerald-100"
+              className="bg-green-600 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-green-700 transition flex items-center gap-2 disabled:opacity-50 shadow-md shadow-green-100"
             >
               {saving ? 'Creating…' : '🎉 Create Division'}
             </button>
