@@ -341,18 +341,6 @@ export default function ProDashboard() {
           </div>
         </div>
       )}
-        <div className="font-bold tracking-widest uppercase text-white">Dugout Hero <span className="text-green-300">PRO</span></div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-bold text-green-300 hidden sm:inline-block">{currentUser?.email}</span>
-          <Link to="/pro/profile" className="bg-green-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-green-600 transition tracking-wide">
-            Profile
-          </Link>
-          <button onClick={logout} title="Log Out" className="p-2 hover:bg-green-700 rounded-lg transition-colors">
-            <LogOut className="w-5 h-5" />
-          </button>
-        </div>
-      </nav>
-
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
 
         {/* ── Super Admin Banner ── */}
