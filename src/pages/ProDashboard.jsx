@@ -375,7 +375,7 @@ export default function ProDashboard() {
                     const LEAGUE_ADMIN_EMAIL = 'league_admin@test.com';
                     const DIVISION_ADMIN_EMAIL = 'division_admin@test.com';
                     const COACH_USER_EMAIL = 'coach_user@test.com';
-                    let LU = 'vUiDeCB44MXIVNRt7SqQV32r1Fz1', DU = 'SbEilYxapSeT8v5DiwhbWjLhSS33', CU = 'PXuoGaGnQugDms8ZaoYl1C0Ge673';
+                    let LU = null, DU = null, CU = null;
                     const usersSnap = await getDocs(collection(db, 'users'));
                     usersSnap.forEach(d => {
                       const data = d.data();
@@ -383,10 +383,15 @@ export default function ProDashboard() {
                       if (data.email === DIVISION_ADMIN_EMAIL) DU = d.id;
                       if (data.email === COACH_USER_EMAIL) CU = d.id;
                     });
-                    const leagueRef = await addDoc(collection(db, 'saas_data', 'v1', 'leagues'), { name: 'Test Alpha League', program: 'Hopkinton Little League', adminUid: LU, createdAt: serverTimestamp() });
+                    if (!LU || !DU || !CU) {
+                      alert(`Missing users in /users collection!\nLeague Admin UID: ${LU || 'NOT FOUND'}\nDivision Admin UID: ${DU || 'NOT FOUND'}\nCoach UID: ${CU || 'NOT FOUND'}\n\nMake sure all three test accounts have logged in at least once.`);
+                      return;
+                    }
+                    console.log('Building test data with UIDs:', { LU, DU, CU });
+                    const leagueRef = await addDoc(collection(db, 'saas_data', 'v1', 'leagues'), { name: 'Test Alpha League', adminUid: LU, createdAt: serverTimestamp() });
                     const divisionRef = await addDoc(collection(db, 'saas_data', 'v1', 'divisions'), { name: 'Majors Division', leagueId: leagueRef.id, adminUid: DU, adminEmail: DIVISION_ADMIN_EMAIL, createdAt: serverTimestamp() });
-                    await addDoc(collection(db, 'saas_data', 'v1', 'teams'), { name: 'Test Gamma Team', leagueId: leagueRef.id, divisionId: divisionRef.id, managerUid: CU, coachEmail: COACH_USER_EMAIL, program: 'Hopkinton Little League', createdAt: serverTimestamp(), seasonSettings: { teamName: 'Test Gamma Team', rosterSize: 12, innings: 6, battingTarget: 6.5 } });
-                    alert('Dev Setup Complete!');
+                    await addDoc(collection(db, 'saas_data', 'v1', 'teams'), { name: 'Test Gamma Team', leagueId: leagueRef.id, divisionId: divisionRef.id, managerUid: CU, coachEmail: COACH_USER_EMAIL, createdAt: serverTimestamp(), seasonSettings: { teamName: 'Test Gamma Team', rosterSize: 12, innings: 6, battingTarget: 6.5 } });
+                    alert(`Dev Setup Complete!\nLeague Admin: ${LU}\nDivision Admin: ${DU}\nCoach: ${CU}`);
                     window.location.reload();
                   } catch (e) { alert('Dev Setup Failed: ' + e.message); }
                 }}
@@ -411,6 +416,17 @@ export default function ProDashboard() {
             </p>
           </div>
         </div>
+
+        {/* ── Dev debug strip (remove after confirming permissions) ── */}
+        {import.meta.env.DEV && (
+          <div className="bg-slate-800 text-green-400 font-mono text-[10px] rounded-xl px-5 py-3 space-y-1">
+            <p>UID: <span className="text-white">{currentUser?.uid}</span></p>
+            <p>Role: <span className="text-white">{isLeagueOwner ? 'League Owner' : isDivisionAdmin ? 'Division Admin' : isCoach ? 'Coach' : 'None'} {isSuperAdmin() ? '+ SuperAdmin' : ''}</span></p>
+            <p>Owned leagues: <span className="text-white">{ownedLeagues.length}</span> ({ownedLeagues.map(l => l.name).join(', ') || 'none'})</p>
+            <p>Owned divisions: <span className="text-white">{ownedDivisions.length}</span></p>
+            <p>Teams: <span className="text-white">{teams.length}</span></p>
+          </div>
+        )}
 
         {/* ── My Leagues ── */}
         {(isLeagueOwner || isSuperAdmin()) && (
