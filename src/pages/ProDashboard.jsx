@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -268,7 +268,7 @@ export default function ProDashboard() {
   if (loading) return <div className="min-h-screen bg-white/40  flex items-center justify-center p-8"><div className="w-8 h-8 border-4 border-emerald-500 border-t-emerald-100 rounded-full animate-spin"></div></div>;
 
   return (
-    <div className="min-h-screen bg-white/40  relative">
+    <div className="min-h-screen bg-stone-50 relative">
       {isCreatingTeam && (
         <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg">
@@ -341,6 +341,20 @@ export default function ProDashboard() {
           </div>
         </div>
       )}
+
+      <nav className="bg-green-800 text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-10">
+        <div className="font-bold tracking-widest uppercase text-white text-sm">Dugout Hero <span className="text-green-300">PRO</span></div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-semibold text-green-300 hidden sm:inline-block">{currentUser?.email}</span>
+          <Link to="/pro/profile" className="bg-green-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-green-600 transition tracking-wide">
+            Profile
+          </Link>
+          <button onClick={logout} title="Log Out" className="p-2 hover:bg-green-700 rounded-lg transition-colors">
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
+      </nav>
+
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
 
         {/* ── Super Admin Banner ── */}
