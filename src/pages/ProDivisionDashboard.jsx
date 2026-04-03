@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   collection, doc, onSnapshot, query, where,
@@ -114,7 +114,7 @@ function DivisionTeamCard({ team, players, games, onOpenLineup, onAssignCoach, o
       <div className="p-6 pb-4">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <h3 className="font-bold text-lg text-slate-900 uppercase tracking-tighter leading-none">{team.name}</h3>
+            <h3 className="font-bold text-lg text-slate-900 leading-none">{team.name}</h3>
             <p className="text-[10px] font-bold text-slate-400 tracking-wide font-medium mt-1">
               {players.length} Players · {games.length} Games · {team.season || 'Spring'} {team.year || '2026'}
             </p>
@@ -168,7 +168,7 @@ function DivisionTeamCard({ team, players, games, onOpenLineup, onAssignCoach, o
                 <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold flex items-center justify-center">
                   {p.number}
                 </div>
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-tight truncate max-w-[100px]">{p.name}</span>
+                <span className="text-xs font-bold text-slate-700 truncate max-w-[100px]">{p.name}</span>
               </div>
               <div className="w-32">
                 <AvgBar avg={p.avg} target={target} low={low} high={high} />
@@ -196,7 +196,7 @@ function DivisionTeamCard({ team, players, games, onOpenLineup, onAssignCoach, o
         <div className="fixed inset-0 bg-slate-900/60 z-[200] flex items-center justify-center p-4" onClick={() => setShowCoachModal(false)}>
           <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-sm shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tighter">Assign Coach</h3>
+              <h3 className="text-lg font-bold text-slate-800">Assign Coach</h3>
               <button onClick={() => setShowCoachModal(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors">
                 <X className="w-4 h-4" />
               </button>
@@ -284,7 +284,7 @@ function TeamStatsModal({ team, players, games, onClose }) {
             <div key={p.id} className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center font-bold text-emerald-600 text-sm shrink-0">{p.number}</div>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-900 text-sm uppercase tracking-tight leading-none mb-2">{p.name}</p>
+                <p className="font-bold text-slate-900 text-sm leading-none mb-2">{p.name}</p>
                 <AvgBar avg={p.avg} target={(low + high) / 2} low={low} high={high} />
               </div>
               <div className="text-right shrink-0">
@@ -497,7 +497,7 @@ export default function ProDivisionDashboard() {
 
         {teams.length > 0 && (
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4 border-t border-slate-200 pt-8">
-            <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">Division Teams</h2>
+            <h2 className="text-xl font-bold text-slate-800">Division Teams</h2>
             
             <div className="flex gap-2">
               <select value={filterSeason} onChange={e => setFilterSeason(e.target.value)} className="bg-white border border-slate-200  border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 tracking-wide font-medium outline-none focus:border-slate-500 appearance-none cursor-pointer">
@@ -556,7 +556,7 @@ export default function ProDivisionDashboard() {
         <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4" onClick={() => setShowAddTeam(false)}>
           <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">Add Team to Division</h3>
+              <h3 className="text-xl font-bold text-slate-800">Add Team to Division</h3>
               <button onClick={() => setShowAddTeam(false)} className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 transition-colors"><X className="w-4 h-4" /></button>
             </div>
 

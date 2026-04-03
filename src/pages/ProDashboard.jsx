@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -271,80 +271,69 @@ export default function ProDashboard() {
     <div className="min-h-screen bg-white/40  relative">
       {isCreatingTeam && (
         <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200">
+          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">New Team</h3>
-              <button 
-                onClick={() => { setIsCreatingTeam(false); setNewTeamName(''); setNewTeamLeagueId(''); setNewTeamDivisionId(''); }} 
+              <h3 className="text-lg font-bold text-gray-900">New Team</h3>
+              <button
+                onClick={() => { setIsCreatingTeam(false); setNewTeamName(''); setNewTeamLeagueId(''); setNewTeamDivisionId(''); }}
                 className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <form onSubmit={handleCreateTeam} className="space-y-6">
+            <form onSubmit={handleCreateTeam} className="space-y-5">
               <div>
-                <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">Team Name</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Team Name</label>
                 <input
                   type="text"
                   autoFocus
-                  className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all uppercase placeholder:normal-case"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 font-semibold text-slate-700 outline-none focus:border-green-500 transition-all"
                   placeholder="e.g. The Sandlot Legends"
                   value={newTeamName}
                   onChange={e => setNewTeamName(e.target.value)}
                 />
               </div>
 
-              {/* context selection if user has multiple or none */}
+              {/* League + Division context */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">League Context</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">League</label>
                   <select
-                    disabled={!!myOnlyDivision || (!!myOnlyLeague && !isSuperAdmin())}
-                    className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all text-sm"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 font-semibold text-slate-700 outline-none focus:border-green-500 transition-all text-sm"
                     value={newTeamLeagueId}
                     onChange={e => {
                       setNewTeamLeagueId(e.target.value);
-                      setNewTeamDivisionId(''); // reset division when league changes
+                      setNewTeamDivisionId('');
                     }}
                   >
-                    <option value="">No League</option>
-                    {leagues.map(l => (
+                    <option value="">— Select League —</option>
+                    {[...ownedLeagues, ...contextLeagues].map(l => (
                       <option key={l.id} value={l.id}>{l.name}</option>
                     ))}
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">Division Context</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Division</label>
                   <select
-                    disabled={!!myOnlyDivision && !isSuperAdmin()}
-                    className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all text-sm"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 font-semibold text-slate-700 outline-none focus:border-green-500 transition-all text-sm"
                     value={newTeamDivisionId}
                     onChange={e => setNewTeamDivisionId(e.target.value)}
                   >
-                    <option value="">No Division</option>
-                    {divisions.filter(d => !newTeamLeagueId || d.leagueId === newTeamLeagueId).map(d => (
-                      <option key={d.id} value={d.id}>{d.name}</option>
-                    ))}
+                    <option value="">— Select Division —</option>
+                    {[...ownedDivisions, ...contextDivisions]
+                      .filter(d => !newTeamLeagueId || d.leagueId === newTeamLeagueId)
+                      .map(d => (
+                        <option key={d.id} value={d.id}>{d.name}</option>
+                      ))
+                    }
                   </select>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-400 tracking-wide font-medium ml-1 mb-2">Program</label>
-                <select
-                  className="w-full bg-white border border-slate-200 rounded-lg px-5 py-3 font-bold text-slate-700 outline-none focus:bg-white border border-slate-200 focus:border-emerald-500 transition-all appearance-none cursor-pointer"
-                  value={newTeamProgram}
-                  onChange={e => setNewTeamProgram(e.target.value)}
-                >
-                  <option value="Hopkinton Little League">Hopkinton Little League</option>
-                  <option disabled value="">More programs coming soon...</option>
-                </select>
-              </div>
               <button
                 type="submit"
                 disabled={!newTeamName.trim()}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 transition-colors text-white shadow-md shadow-emerald-200 font-bold py-3 rounded-lg tracking-wide transition-all duration-300 disabled:opacity-50 disabled:shadow-none"
+                className="w-full bg-green-600 hover:bg-green-700 transition text-white font-bold py-3 rounded-lg tracking-wide disabled:opacity-50"
               >
                 Create Team
               </button>
@@ -352,8 +341,6 @@ export default function ProDashboard() {
           </div>
         </div>
       )}
-
-      <nav className="bg-green-800 text-white px-6 py-4 flex justify-between items-center shadow-md relative z-10">
         <div className="font-bold tracking-widest uppercase text-white">Dugout Hero <span className="text-green-300">PRO</span></div>
         <div className="flex items-center gap-3">
           <span className="text-xs font-bold text-green-300 hidden sm:inline-block">{currentUser?.email}</span>
@@ -675,7 +662,7 @@ export default function ProDashboard() {
                       ${newDivisionLeagueId === l.id ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
                   >
                     <Trophy className={`w-5 h-5 shrink-0 ${newDivisionLeagueId === l.id ? 'text-blue-500' : 'text-slate-400'}`} />
-                    <span className="font-bold text-slate-800 uppercase tracking-tight text-sm">{l.name}</span>
+                    <span className="font-bold text-slate-800 text-sm">{l.name}</span>
                   </button>
                 ))}
                 <button

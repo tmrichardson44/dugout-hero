@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { X, ChevronRight, ChevronLeft, Layers, Users, Settings, CheckCircle2, Trophy } from 'lucide-react';
@@ -154,7 +154,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
               <input
                 type="text"
                 autoFocus
-                className="w-full border-2 border-slate-200 rounded-xl px-5 py-4 font-bold text-slate-800 text-xl outline-none focus:border-green-500 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300 placeholder:text-base"
+                className="w-full border-2 border-slate-200 rounded-xl px-5 py-4 font-bold text-slate-800 text-xl outline-none focus:border-green-500 transition-all placeholder:text-slate-400 placeholder:font-normal placeholder:text-slate-300 placeholder:text-base"
                 placeholder="e.g. Majors"
                 value={divisionName}
                 onChange={e => setDivisionName(e.target.value)}
@@ -178,7 +178,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
                       <label className="block text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1.5">Team {ti + 1}</label>
                       <input
                         type="text"
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 text-sm outline-none focus:border-green-500 focus:bg-green-50 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300"
+                        className="w-full border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 text-sm outline-none focus:border-green-500 focus:bg-green-50 transition-all placeholder:text-slate-400 placeholder:font-normal placeholder:text-slate-300"
                         placeholder={`${divisionName || 'Division'} Team ${ti + 1}`}
                         value={teamNames[ti] || ''}
                         onChange={e => setTeamNames(prev => prev.map((n, k) => k === ti ? e.target.value : n))}
@@ -275,7 +275,7 @@ export default function DivisionSetupWizard({ currentUser, leagueId, leagueName,
                     <Layers className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="font-bold text-slate-800 uppercase tracking-tight">{divisionName}</p>
+                    <p className="font-bold text-slate-800">{divisionName}</p>
                     <p className="text-[10px] text-slate-400 font-bold">{season} {year} · {teamCount} teams</p>
                   </div>
                 </div>

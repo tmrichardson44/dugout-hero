@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import {
@@ -207,7 +207,7 @@ export default function LeagueSetupWizard({ currentUser, onClose, onComplete }) 
               <input
                 type="text"
                 autoFocus
-                className="w-full border-2 border-slate-200 rounded-xl px-5 py-4 font-bold text-slate-800 text-xl outline-none focus:border-green-500 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300 placeholder:text-base"
+                className="w-full border-2 border-slate-200 rounded-xl px-5 py-4 font-bold text-slate-800 text-xl outline-none focus:border-green-500 transition-all placeholder:text-slate-400 placeholder:font-normal placeholder:text-slate-300 placeholder:text-base"
                 placeholder="e.g. Hopkinton Little League"
                 value={leagueName}
                 onChange={e => setLeagueName(e.target.value)}
@@ -230,7 +230,7 @@ export default function LeagueSetupWizard({ currentUser, onClose, onComplete }) 
                     <label className="block text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1.5">Division {i + 1}</label>
                     <input
                       type="text"
-                      className="w-full border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 text-sm outline-none focus:border-green-500 focus:bg-green-50/30 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300"
+                      className="w-full border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 text-sm outline-none focus:border-green-500 focus:bg-green-50/30 transition-all placeholder:text-slate-400 placeholder:font-normal placeholder:text-slate-300"
                       placeholder={`Division ${i + 1}`}
                       value={name}
                       onChange={e => setDivisionNames(prev => prev.map((n, j) => j === i ? e.target.value : n))}
@@ -256,7 +256,7 @@ export default function LeagueSetupWizard({ currentUser, onClose, onComplete }) 
                         <div className="w-7 h-7 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
                           <Layers className="w-3.5 h-3.5" />
                         </div>
-                        <span className="font-bold text-slate-700 text-sm uppercase tracking-tight">{divName}</span>
+                        <span className="font-bold text-slate-700 text-sm">{divName}</span>
                       </div>
                       <Stepper value={teamCounts[di]} min={0} max={12} onChange={n => handleTeamCountChange(di, n)} />
                     </div>
@@ -266,7 +266,7 @@ export default function LeagueSetupWizard({ currentUser, onClose, onComplete }) 
                           <input
                             key={ti}
                             type="text"
-                            className="w-full border border-slate-200 bg-white rounded-lg px-3 py-2 font-bold text-slate-700 text-xs outline-none focus:border-green-400 focus:bg-green-50/30 transition-all uppercase placeholder:normal-case placeholder:font-normal placeholder:text-slate-300"
+                            className="w-full border border-slate-200 bg-white rounded-lg px-3 py-2 font-bold text-slate-700 text-xs outline-none focus:border-green-400 focus:bg-green-50/30 transition-all placeholder:text-slate-400 placeholder:font-normal placeholder:text-slate-300"
                             placeholder={`${divName} Team ${ti + 1}`}
                             value={teamNames[di]?.[ti] || ''}
                             onChange={e => setTeamNames(prev => prev.map((teams, j) =>
@@ -366,7 +366,7 @@ export default function LeagueSetupWizard({ currentUser, onClose, onComplete }) 
                     <Trophy className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="font-bold text-slate-800 uppercase tracking-tight">{leagueName}</p>
+                    <p className="font-bold text-slate-800">{leagueName}</p>
                     <p className="text-[10px] text-slate-400 font-bold">{season} {year} · {divisionCount} divisions · {totalTeams} teams total</p>
                   </div>
                 </div>
@@ -377,7 +377,7 @@ export default function LeagueSetupWizard({ currentUser, onClose, onComplete }) 
                       <div className="w-6 h-6 bg-blue-100 text-blue-500 rounded-md flex items-center justify-center shrink-0">
                         <Layers className="w-3 h-3" />
                       </div>
-                      <p className="font-bold text-slate-600 text-sm uppercase tracking-tight">{divName}</p>
+                      <p className="font-bold text-slate-600 text-sm">{divName}</p>
                       <span className="text-[10px] text-slate-400 font-bold ml-auto">{teamCounts[di]} teams</span>
                     </div>
                     <div className="pl-8 grid grid-cols-2 gap-x-4 gap-y-1">
