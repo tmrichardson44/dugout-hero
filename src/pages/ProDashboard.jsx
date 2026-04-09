@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc, deleteDoc, or } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Users, LogOut, ShieldAlert, Plus, X, Trophy, ChevronRight, Layers, Trash2 } from 'lucide-react';
+import { Users, LogOut, ShieldAlert, Plus, X, Trophy, ChevronRight, Layers, Trash2, Settings } from 'lucide-react';
 import LeagueSetupWizard from '../components/LeagueSetupWizard';
 import DivisionSetupWizard from '../components/DivisionSetupWizard';
 
@@ -25,19 +25,14 @@ export default function ProDashboard() {
   const [newDivisionName, setNewDivisionName] = useState('');
   const [newDivisionLeagueId, setNewDivisionLeagueId] = useState('');
 
-  // Derive role: based on what the user *owns* in the DB
-  // leagueOwner  = has leagues where adminUid === uid
-  // divisionAdmin = has divisions where adminUid === uid (but no owned leagues)
-  // coach        = has teams where managerUid === uid (but no owned leagues/divisions)
   const [ownedLeagues, setOwnedLeagues] = useState([]);
-  const [contextLeagues, setContextLeagues] = useState([]); // read-only leagues (for division admin / coach)
+  const [contextLeagues, setContextLeagues] = useState([]); 
   const [ownedDivisions, setOwnedDivisions] = useState([]);
-  const [contextDivisions, setContextDivisions] = useState([]); // read-only divisions (for coach)
+  const [contextDivisions, setContextDivisions] = useState([]); 
 
   const isLeagueOwner = ownedLeagues.length > 0;
   const isDivisionAdmin = !isLeagueOwner && ownedDivisions.length > 0;
   const isCoach = !isLeagueOwner && !isDivisionAdmin && teams.length > 0;
-  // New user: logged in but no data yet — should be able to create a league
   const isNewUser = !isLeagueOwner && !isDivisionAdmin && !isCoach && !isSuperAdmin();
 
   useEffect(() => {
@@ -52,7 +47,6 @@ export default function ProDashboard() {
         let fetchedContextLeagues = [], fetchedContextDivisions = [];
 
         if (isSuperAdmin()) {
-          // Super Admin: fetch everything
           const [tSnap, lSnap, dSnap] = await Promise.all([
             getDocs(collection(db, 'saas_data', 'v1', 'teams')),
             getDocs(collection(db, 'saas_data', 'v1', 'leagues')),
@@ -62,31 +56,36 @@ export default function ProDashboard() {
           fetchedOwnedLeagues = lSnap.docs.map(d => ({ id: d.id, ...d.data() }));
           fetchedOwnedDivisions = dSnap.docs.map(d => ({ id: d.id, ...d.data() }));
         } else {
-          // Step 1: Fetch what the user directly owns
+          const userEmail = currentUser.email?.toLowerCase();
           const [tSnap, lSnap, dSnap] = await Promise.all([
-            getDocs(query(collection(db, 'saas_data', 'v1', 'teams'), where('managerUid', '==', currentUser.uid))),
+            getDocs(query(collection(db, 'saas_data', 'v1', 'teams'), or(
+              where('managerUid', '==', currentUser.uid),
+              where('coachEmail', '==', userEmail || 'unknown'),
+              where('managerEmail', '==', userEmail || 'unknown')
+            ))),
             getDocs(query(collection(db, 'saas_data', 'v1', 'leagues'), where('adminUid', '==', currentUser.uid))),
             getDocs(query(collection(db, 'saas_data', 'v1', 'divisions'), where('adminUid', '==', currentUser.uid))),
           ]);
+          
+          const teamUpdates = tSnap.docs.filter(d => !d.data().managerUid).map(async d => {
+            await updateDoc(d.ref, { managerUid: currentUser.uid });
+          });
+          if (teamUpdates.length > 0) await Promise.all(teamUpdates);
+          
           fetchedTeams = tSnap.docs.map(d => ({ id: d.id, ...d.data() }));
           fetchedOwnedLeagues = lSnap.docs.map(d => ({ id: d.id, ...d.data() }));
           fetchedOwnedDivisions = dSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-          // Step 1.5: For League Owners — also fetch ALL divisions in their leagues.
-          // Divisions store adminUid = the division admin's uid (not the league owner's), so the
-          // initial query by adminUid returns nothing for league owners. Fix: query by leagueId.
           if (fetchedOwnedLeagues.length > 0) {
             const leagueIds = fetchedOwnedLeagues.map(l => l.id);
             const leagueDivSnap = await getDocs(
               query(collection(db, 'saas_data', 'v1', 'divisions'), where('leagueId', 'in', leagueIds))
             );
             const leagueDivisions = leagueDivSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            // Merge, deduplicating any that already came back from the adminUid query
             const existingIds = new Set(fetchedOwnedDivisions.map(d => d.id));
             leagueDivisions.forEach(d => { if (!existingIds.has(d.id)) fetchedOwnedDivisions.push(d); });
           }
 
-          // Step 2: For Division Admins — fetch their parent league (read-only context)
           if (fetchedOwnedLeagues.length === 0 && fetchedOwnedDivisions.length > 0) {
             const parentLeagueIds = [...new Set(fetchedOwnedDivisions.map(d => d.leagueId).filter(Boolean))];
             const allLeaguesSnap = await getDocs(collection(db, 'saas_data', 'v1', 'leagues'));
@@ -95,7 +94,6 @@ export default function ProDashboard() {
             fetchedContextLeagues = parentLeagueIds.map(id => allLeaguesMap[id]).filter(Boolean);
           }
 
-          // Step 3: For Coaches — fetch their parent league AND division (read-only context)
           if (fetchedOwnedLeagues.length === 0 && fetchedOwnedDivisions.length === 0 && fetchedTeams.length > 0) {
             const parentLeagueIds = [...new Set(fetchedTeams.map(t => t.leagueId).filter(Boolean))];
             const parentDivisionIds = [...new Set(fetchedTeams.map(t => t.divisionId).filter(Boolean))];
@@ -112,6 +110,17 @@ export default function ProDashboard() {
             fetchedContextLeagues = parentLeagueIds.map(id => allLeaguesMap[id]).filter(Boolean);
             fetchedContextDivisions = parentDivisionIds.map(id => allDivisionsMap[id]).filter(Boolean);
           }
+
+          if (fetchedOwnedDivisions.length > 0) {
+             const allTeamsSnap = await getDocs(collection(db, 'saas_data', 'v1', 'teams'));
+             const myDivIds = new Set(fetchedOwnedDivisions.map(d => d.id));
+             const existingIds = new Set(fetchedTeams.map(t => t.id));
+             allTeamsSnap.forEach(d => {
+                if (myDivIds.has(d.data().divisionId) && !existingIds.has(d.id)) {
+                   fetchedTeams.push({ id: d.id, ...d.data() });
+                }
+             });
+          }
         }
 
         setTeams(fetchedTeams);
@@ -119,7 +128,6 @@ export default function ProDashboard() {
         setOwnedDivisions(fetchedOwnedDivisions);
         setContextLeagues(fetchedContextLeagues);
         setContextDivisions(fetchedContextDivisions);
-        // For backward compat with existing modal logic
         setLeagues(fetchedOwnedLeagues.length > 0 ? fetchedOwnedLeagues : fetchedContextLeagues);
         setDivisions(fetchedOwnedDivisions.length > 0 ? fetchedOwnedDivisions : fetchedContextDivisions);
       } catch (err) {
@@ -129,13 +137,9 @@ export default function ProDashboard() {
     }
 
     async function ensureSuperAdmin() {
-      // Auto-upgrade the owner email to super_admin if not already
       if (currentUser.email === 'tmrichardson44@gmail.com' && currentUser.systemRole !== 'super_admin') {
         try {
-          await updateDoc(doc(db, 'users', currentUser.uid), {
-            systemRole: 'super_admin'
-          });
-          // Note: The context will update soon from the listener
+          await updateDoc(doc(db, 'users', currentUser.uid), { systemRole: 'super_admin' });
         } catch (e) {
           console.error('Failed to auto-upgrade to super admin', e);
         }
@@ -146,38 +150,46 @@ export default function ProDashboard() {
     fetchData();
   }, [currentUser, navigate, isSuperAdmin]);
 
-  // Derived state to help creation modals
-  const myOnlyLeague = leagues.length === 1 ? leagues[0] : null;
-  const myOnlyDivision = divisions.length === 1 ? divisions[0] : null;
-  const myFirstTeam = teams.length > 0 ? teams[0] : null;
+  const getDivisionTheme = (name) => {
+    if (!name || name === 'No Division') return 'div-theme-slate';
+    const lower = name.toLowerCase().trim();
+    
+    // Explicit mapping for predictable colors
+    if (lower.includes('minor')) return 'div-theme-rose';    // Minors = Red/Rose
+    if (lower.includes('farm'))  return 'div-theme-blue';    // Farm = Blue
+    if (lower.includes('major')) return 'div-theme-emerald'; // Majors = Green
+    if (lower.includes('ball') || lower.includes('tball')) return 'div-theme-amber';
+    
+    // Fallback hashing for anything else
+    const themes = ['indigo', 'violet', 'rose', 'blue', 'amber', 'emerald'];
+    let hash = 0;
+    for (let i = 0; i < lower.length; i++) {
+      hash = lower.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % themes.length;
+    return `div-theme-${themes[index]}`;
+  };
 
   const [newTeamLeagueId, setNewTeamLeagueId] = useState('');
   const [newTeamDivisionId, setNewTeamDivisionId] = useState('');
 
   useEffect(() => {
     if (isCreatingTeam) {
+      const myOnlyLeague = leagues.length === 1 ? leagues[0] : null;
+      const myOnlyDivision = divisions.length === 1 ? divisions[0] : null;
+      const myFirstTeam = teams.length > 0 ? teams[0] : null;
+
       if (myOnlyDivision) {
         setNewTeamLeagueId(myOnlyDivision.leagueId);
         setNewTeamDivisionId(myOnlyDivision.id);
       } else if (myOnlyLeague) {
         setNewTeamLeagueId(myOnlyLeague.id);
       } else if (myFirstTeam) {
-        // Coach context inheritance
         setNewTeamLeagueId(myFirstTeam.leagueId || '');
         setNewTeamDivisionId(myFirstTeam.divisionId || '');
       }
     }
-  }, [isCreatingTeam, myOnlyLeague, myOnlyDivision, myFirstTeam]);
-
-  useEffect(() => {
-    if (isCreatingDivision) {
-      if (myOnlyLeague) {
-        setNewDivisionLeagueId(myOnlyLeague.id);
-      } else if (myOnlyDivision) {
-        setNewDivisionLeagueId(myOnlyDivision.leagueId);
-      }
-    }
-  }, [isCreatingDivision, myOnlyLeague, myOnlyDivision]);
+  }, [isCreatingTeam, leagues, divisions, teams]);
 
   async function handleCreateTeam(e) {
     if (e) e.preventDefault();
@@ -191,7 +203,6 @@ export default function ProDashboard() {
         divisionId: newTeamDivisionId || null,
         createdAt: new Date().toISOString()
       };
-      
       const newTeamRef = await addDoc(collection(db, 'saas_data', 'v1', 'teams'), payload);
       setTeams([...teams, { id: newTeamRef.id, ...payload }]);
       setIsCreatingTeam(false);
@@ -220,108 +231,70 @@ export default function ProDashboard() {
     }
   }
 
-  async function handleDeleteLeague(leagueId, leagueName) {
-    if (!window.confirm(`Are you sure you want to delete the league "${leagueName}"? This cannot be undone.`)) return;
-    try {
-      await deleteDoc(doc(db, 'saas_data', 'v1', 'leagues', leagueId));
-      setLeagues(leagues.filter(l => l.id !== leagueId));
-      setOwnedLeagues(ownedLeagues.filter(l => l.id !== leagueId));
-    } catch (err) {
-      alert('Failed to delete league: ' + err.message);
-    }
-  }
+  const sortedTeams = [...teams].sort((a, b) => {
+    const allDivisions = [...ownedDivisions, ...contextDivisions];
+    const divA = allDivisions.find(d => d.id === a.divisionId)?.name?.toLowerCase() || 'zzzz';
+    const divB = allDivisions.find(d => d.id === b.divisionId)?.name?.toLowerCase() || 'zzzz';
+    if (divA < divB) return -1;
+    if (divA > divB) return 1;
+    return a.name.localeCompare(b.name);
+  });
 
-  async function handleDeleteDivision(divisionId, divisionName) {
-    if (!window.confirm(`Delete division "${divisionName}"? All associated data will remain but division context will be lost.`)) return;
-    try {
-      await deleteDoc(doc(db, 'saas_data', 'v1', 'divisions', divisionId));
-      setOwnedDivisions(ownedDivisions.filter(d => d.id !== divisionId));
-      setDivisions(divisions.filter(d => d.id !== divisionId));
-    } catch (err) {
-      alert('Failed to delete division: ' + err.message);
-    }
-  }
-
-  async function handleCreateDivision(e) {
-    if (e) e.preventDefault();
-    const finalLeagueId = newDivisionLeagueId || (divisions.length > 0 ? divisions[0].leagueId : null);
-    if (!newDivisionName.trim() || !finalLeagueId) {
-      alert('League context required for new division.');
-      return;
-    }
-    try {
-      const payload = {
-        name: newDivisionName.trim(),
-        leagueId: finalLeagueId,
-        adminUid: currentUser.uid,
-        adminEmail: currentUser.email,
-        createdAt: serverTimestamp()
-      };
-      const ref = await addDoc(collection(db, 'saas_data', 'v1', 'divisions'), payload);
-      setDivisions([...divisions, { id: ref.id, ...payload }]);
-      setIsCreatingDivision(false);
-      setNewDivisionName('');
-      setNewDivisionLeagueId('');
-    } catch (err) {
-      alert('Failed to create division: ' + err.message);
-    }
-  }
-
-  if (loading) return <div className="min-h-screen bg-white/40  flex items-center justify-center p-8"><div className="w-8 h-8 border-4 border-emerald-500 border-t-emerald-100 rounded-full animate-spin"></div></div>;
+  if (loading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8"><div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
   return (
-    <div className="min-h-screen bg-stone-50 relative">
+    <div className="min-h-screen bg-slate-50 relative font-sans text-slate-800 antialiased">
+      {/* ── Overlays ── */}
       {isCreatingTeam && (
-        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-xl p-8 w-full max-w-md shadow-lg">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-gray-900">New Team</h3>
+        <div className="fixed inset-0 bg-slate-900/40 z-[100] flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-100 rounded-lg p-6 w-full max-w-md shadow-xl animation-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="text-base font-semibold text-gray-800">New Team</h3>
               <button
                 onClick={() => { setIsCreatingTeam(false); setNewTeamName(''); setNewTeamLeagueId(''); setNewTeamDivisionId(''); }}
-                className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors"
+                className="w-7 h-7 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-100 hover:text-slate-600 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <form onSubmit={handleCreateTeam} className="space-y-5">
+            <form onSubmit={handleCreateTeam} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Team Name</label>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Team Name</label>
                 <input
                   type="text"
                   autoFocus
-                  className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 font-semibold text-slate-700 outline-none focus:border-green-500 transition-all"
+                  className="w-full bg-white border border-slate-100 rounded-lg px-4 py-2.5 font-medium text-slate-700 outline-none focus:border-emerald-500 transition-all text-sm"
                   placeholder="e.g. The Sandlot Legends"
                   value={newTeamName}
                   onChange={e => setNewTeamName(e.target.value)}
                 />
               </div>
 
-              {/* League + Division context */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">League</label>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">League</label>
                   <select
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 font-semibold text-slate-700 outline-none focus:border-green-500 transition-all text-sm"
+                    className="w-full bg-white border border-slate-100 rounded-lg px-3 py-2 font-medium text-slate-700 outline-none focus:border-emerald-500 transition-all text-xs"
                     value={newTeamLeagueId}
                     onChange={e => {
                       setNewTeamLeagueId(e.target.value);
                       setNewTeamDivisionId('');
                     }}
                   >
-                    <option value="">— Select League —</option>
+                    <option value="">— Select —</option>
                     {[...ownedLeagues, ...contextLeagues].map(l => (
                       <option key={l.id} value={l.id}>{l.name}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Division</label>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Division</label>
                   <select
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 font-semibold text-slate-700 outline-none focus:border-green-500 transition-all text-sm"
+                    className="w-full bg-white border border-slate-100 rounded-lg px-3 py-2 font-medium text-slate-700 outline-none focus:border-emerald-500 transition-all text-xs"
                     value={newTeamDivisionId}
                     onChange={e => setNewTeamDivisionId(e.target.value)}
                   >
-                    <option value="">— Select Division —</option>
+                    <option value="">— Select —</option>
                     {[...ownedDivisions, ...contextDivisions]
                       .filter(d => !newTeamLeagueId || d.leagueId === newTeamLeagueId)
                       .map(d => (
@@ -335,7 +308,7 @@ export default function ProDashboard() {
               <button
                 type="submit"
                 disabled={!newTeamName.trim()}
-                className="w-full bg-green-600 hover:bg-green-700 transition text-white font-bold py-3 rounded-lg tracking-wide disabled:opacity-50"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 transition text-white font-semibold py-2.5 rounded-lg text-sm tracking-wide disabled:opacity-50 mt-2 shadow-sm"
               >
                 Create Team
               </button>
@@ -344,158 +317,96 @@ export default function ProDashboard() {
         </div>
       )}
 
-      <nav className="bg-green-800 text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-10">
-        <div className="font-bold tracking-widest uppercase text-white text-sm">Dugout Hero <span className="text-green-300">PRO</span></div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold text-green-300 hidden sm:inline-block">{currentUser?.email}</span>
-          <Link to="/pro/profile" className="bg-green-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-green-600 transition tracking-wide">
-            Profile
-          </Link>
-          <button onClick={logout} title="Log Out" className="p-2 hover:bg-green-700 rounded-lg transition-colors">
-            <LogOut className="w-5 h-5" />
-          </button>
+      {isCreatingLeague && (
+        <LeagueSetupWizard
+          currentUser={currentUser}
+          onClose={() => setIsCreatingLeague(false)}
+          onComplete={() => { setIsCreatingLeague(false); window.location.reload(); }}
+        />
+      )}
+
+      {/* ── Nav ── */}
+      <nav className="nav-header">
+        <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
+          <div className="flex items-center gap-2">
+            <span className="text-base font-semibold text-emerald-600 tracking-tight">LINEUP HERO <span className="text-slate-400 ml-0.5">PRO</span></span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link to="/pro/profile" className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center hover:bg-slate-100 transition-colors">
+              <Users className="w-4 h-4 text-slate-400" />
+            </Link>
+            <button
+               onClick={() => setIsCreatingTeam(true)}
+               className="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 shadow-sm uppercase tracking-wider"
+            >
+              <Plus className="w-3.5 h-3.5" /> New
+            </button>
+            <button onClick={logout} title="Log Out" className="p-1 text-slate-300 hover:text-slate-500 transition-colors">
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
-
-        {/* ── Super Admin Banner ── */}
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-12">
         {isSuperAdmin() && (
-          <div className="bg-rose-50 border border-rose-200 rounded-xl p-5 flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-3 text-rose-700">
-              <ShieldAlert className="w-6 h-6 shrink-0" />
-              <div>
-                <h3 className="font-semibold text-sm">Super Admin Access</h3>
-                <p className="text-xs text-rose-500 mt-0.5">System-wide privileges — all data visible.</p>
-              </div>
+          <div className="bg-rose-50/50 border border-rose-100 rounded-lg px-4 py-2 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-rose-600">
+              <ShieldAlert className="w-4 h-4 shrink-0" />
+              <p className="text-[10px] font-bold uppercase tracking-widest">Super Admin Mode</p>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={async () => {
-                  if (!window.confirm('Run Dev Setup for Test Users? (Clear existing and rebuild)')) return;
-                  try {
-                    const LEAGUE_ADMIN_EMAIL = 'league_admin@test.com';
-                    const DIVISION_ADMIN_EMAIL = 'division_admin@test.com';
-                    const COACH_USER_EMAIL = 'coach_user@test.com';
-                    let LU = null, DU = null, CU = null;
-                    const usersSnap = await getDocs(collection(db, 'users'));
-                    usersSnap.forEach(d => {
-                      const data = d.data();
-                      if (data.email === LEAGUE_ADMIN_EMAIL) LU = d.id;
-                      if (data.email === DIVISION_ADMIN_EMAIL) DU = d.id;
-                      if (data.email === COACH_USER_EMAIL) CU = d.id;
-                    });
-                    if (!LU || !DU || !CU) {
-                      alert(`Missing users in /users collection!\nLeague Admin UID: ${LU || 'NOT FOUND'}\nDivision Admin UID: ${DU || 'NOT FOUND'}\nCoach UID: ${CU || 'NOT FOUND'}\n\nMake sure all three test accounts have logged in at least once.`);
-                      return;
-                    }
-                    console.log('Building test data with UIDs:', { LU, DU, CU });
-                    const leagueRef = await addDoc(collection(db, 'saas_data', 'v1', 'leagues'), { name: 'Test Alpha League', adminUid: LU, createdAt: serverTimestamp() });
-                    const divisionRef = await addDoc(collection(db, 'saas_data', 'v1', 'divisions'), { name: 'Majors Division', leagueId: leagueRef.id, adminUid: DU, adminEmail: DIVISION_ADMIN_EMAIL, createdAt: serverTimestamp() });
-                    await addDoc(collection(db, 'saas_data', 'v1', 'teams'), { name: 'Test Gamma Team', leagueId: leagueRef.id, divisionId: divisionRef.id, managerUid: CU, coachEmail: COACH_USER_EMAIL, createdAt: serverTimestamp(), seasonSettings: { teamName: 'Test Gamma Team', rosterSize: 12, innings: 6, battingTarget: 6.5 } });
-                    alert(`Dev Setup Complete!\nLeague Admin: ${LU}\nDivision Admin: ${DU}\nCoach: ${CU}`);
-                    window.location.reload();
-                  } catch (e) { alert('Dev Setup Failed: ' + e.message); }
-                }}
-                className="bg-rose-100 text-rose-700 px-3 py-2 rounded-lg font-mono text-[10px] hover:bg-rose-200 transition"
-              >REBUILD_TEST_DATA</button>
-              <Link to="/admin" className="bg-rose-600 text-white px-4 py-2 rounded-lg font-semibold text-xs hover:bg-rose-700 transition">Admin Panel</Link>
-            </div>
+            <Link to="/admin" className="text-rose-600 text-[10px] font-bold uppercase tracking-widest hover:underline">Open Panel</Link>
           </div>
         )}
 
-        {/* ── Welcome / Role strip ── */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              {isLeagueOwner ? 'League Dashboard' : isDivisionAdmin ? 'Division Dashboard' : isNewUser ? 'Welcome to Dugout Hero' : 'My Dashboard'}
+            <h1 className="text-lg font-semibold text-slate-800 leading-tight">
+              {isLeagueOwner ? 'League Dashboard' : isDivisionAdmin ? 'Division Dashboard' : isCoach ? 'Coach View' : 'Welcome'}
             </h1>
-            <p className="text-sm text-gray-500 mt-0.5">
-              {isLeagueOwner && `${ownedLeagues.length} league${ownedLeagues.length !== 1 ? 's' : ''} · ${ownedDivisions.length} division${ownedDivisions.length !== 1 ? 's' : ''} · ${teams.length} team${teams.length !== 1 ? 's' : ''}`}
-              {isDivisionAdmin && `Managing ${ownedDivisions.length} division${ownedDivisions.length !== 1 ? 's' : ''} · ${teams.length} team${teams.length !== 1 ? 's' : ''}`}
-              {isCoach && `Managing ${teams.length} team${teams.length !== 1 ? 's' : ''}`}
-              {isNewUser && "Let's get your league set up. Start by creating your first league."}
-              {isSuperAdmin() && !isLeagueOwner && !isDivisionAdmin && !isCoach && 'Super Admin — full data access'}
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+              {isLeagueOwner && `${ownedLeagues.length} LEAGUES · ${ownedDivisions.length} DIVISIONS · ${teams.length} TEAMS`}
+              {isDivisionAdmin && `${ownedDivisions.length} DIVISIONS · ${teams.length} TEAMS`}
+              {isCoach && `${teams.length} TEAMS MANAGED`}
             </p>
           </div>
-          {isNewUser && (
-            <button
-              onClick={() => setIsCreatingLeague(true)}
-              className="bg-green-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-green-700 transition flex items-center gap-2 shadow-sm"
-            >
-              <Plus className="w-4 h-4" /> Create Your League
-            </button>
-          )}
         </div>
 
-        {/* ── Dev debug strip (remove after confirming permissions) ── */}
-        {import.meta.env.DEV && (
-          <div className="bg-slate-800 text-green-400 font-mono text-[10px] rounded-xl px-5 py-3 space-y-1">
-            <p>UID: <span className="text-white">{currentUser?.uid}</span></p>
-            <p>Role: <span className="text-white">{isLeagueOwner ? 'League Owner' : isDivisionAdmin ? 'Division Admin' : isCoach ? 'Coach' : 'None'} {isSuperAdmin() ? '+ SuperAdmin' : ''}</span></p>
-            <p>Owned leagues: <span className="text-white">{ownedLeagues.length}</span> ({ownedLeagues.map(l => l.name).join(', ') || 'none'})</p>
-            <p>Owned divisions: <span className="text-white">{ownedDivisions.length}</span></p>
-            <p>Teams: <span className="text-white">{teams.length}</span></p>
-          </div>
-        )}
-
-        {/* ── My Leagues ── */}
+        {/* Leagues */}
         {(isLeagueOwner || isNewUser || isSuperAdmin()) && (
           <section>
-            {/* Section header */}
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <h2 className="text-base font-semibold text-gray-900">My Leagues</h2>
-                <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">{ownedLeagues.length}</span>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="section-title">Leagues</h2>
+                <p className="section-subtitle">Manage high-level league programs</p>
               </div>
-              {(isLeagueOwner || isNewUser || isSuperAdmin()) && (
-                <button onClick={() => setIsCreatingLeague(true)} className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-xs hover:bg-green-700 transition flex items-center gap-1.5 shadow-sm">
-                  <Plus className="w-3.5 h-3.5" /> New League
-                </button>
-              )}
+              <button onClick={() => setIsCreatingLeague(true)} className="text-emerald-600 hover:text-emerald-700 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-all">
+                <Plus className="w-3 h-3" /> Create League
+              </button>
             </div>
 
             {ownedLeagues.length === 0 ? (
-              <div className="bg-white border-2 border-dashed border-green-200 rounded-xl p-12 text-center">
-                <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Trophy className="w-7 h-7 text-green-600" />
-                </div>
-                <h3 className="text-base font-bold text-gray-800 mb-1">No Leagues Yet</h3>
-                <p className="text-sm text-gray-400 mb-5">Create your first league to get started. You'll set up divisions, teams, and settings all in one go.</p>
-                <button
-                  onClick={() => setIsCreatingLeague(true)}
-                  className="bg-green-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-green-700 transition shadow-sm"
-                >Create Your First League</button>
+              <div className="card-premium p-12 text-center border-dashed border-2 border-slate-100 bg-slate-50/30">
+                <Trophy className="w-10 h-10 text-slate-200 mx-auto mb-3" />
+                <h3 className="text-sm font-semibold text-slate-600 mb-1">No Leagues Yet</h3>
+                <p className="text-[10px] text-slate-400 font-medium mb-4">Start by creating your first program.</p>
+                <button onClick={() => setIsCreatingLeague(true)} className="bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-sm hover:bg-emerald-700 transition">Get Started</button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {ownedLeagues.map(league => (
                   <Link key={league.id} to={`/pro/league/${league.id}`}
-                    className="group bg-white border-l-4 border-l-amber-400 border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-amber-300 transition-all duration-200 block"
+                    className="card-premium group border-t-2 border-t-emerald-500 overflow-hidden hover:shadow-md transition-all"
                   >
-                    <div className="p-5">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center shrink-0">
-                            <Trophy className="w-4.5 h-4.5 w-[18px] h-[18px]" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-900 text-sm leading-tight">{league.name}</h3>
-                            <p className="text-xs text-gray-400 mt-0.5">League</p>
-                          </div>
-                        </div>
-                        {(league.adminUid === currentUser?.uid || isSuperAdmin()) && (
-                          <button
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteLeague(league.id, league.name); }}
-                            className="p-1.5 text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                          ><Trash2 className="w-3.5 h-3.5" /></button>
-                        )}
-                      </div>
-                    </div>
-                    <div className="px-5 py-3 bg-amber-50 border-t border-amber-100 flex items-center justify-between">
-                      <span className="text-xs font-semibold text-amber-700">Open League Dashboard</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-amber-500 group-hover:translate-x-0.5 transition-transform" />
+                    <div className="p-6">
+                       <div className="w-10 h-10 bg-emerald-700 text-white rounded-lg flex items-center justify-center mb-5 shadow-sm">
+                          <Trophy className="w-5 h-5" />
+                       </div>
+                       <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight mb-1">{league.name}</h3>
+                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">{league.program || 'Lineup Hero'}</p>
+                       <div className="flex items-center text-emerald-600 font-bold text-[10px] uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                         Open Dashboard <ChevronRight className="w-3 h-3 ml-1" />
+                       </div>
                     </div>
                   </Link>
                 ))}
@@ -504,73 +415,43 @@ export default function ProDashboard() {
           </section>
         )}
 
-        {/* ── League Context banner (read-only for Division Admins / Coaches) ── */}
-        {!isLeagueOwner && !isSuperAdmin() && contextLeagues.length > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 flex items-center gap-4">
-            <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center shrink-0">
-              <Trophy className="w-[18px] h-[18px]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-0.5">Your League</p>
-              <p className="text-sm font-semibold text-gray-900 truncate">{contextLeagues[0]?.name}</p>
-            </div>
-            <span className="text-[10px] font-semibold text-amber-500 bg-amber-100 px-2 py-1 rounded-full uppercase tracking-wide shrink-0">View Only</span>
-          </div>
-        )}
-
-        {/* ── My Divisions ── */}
+        {/* Divisions */}
         {(isLeagueOwner || isDivisionAdmin || isSuperAdmin()) && (
           <section>
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                <h2 className="text-base font-semibold text-gray-900">My Divisions</h2>
-                <span className="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">{ownedDivisions.length}</span>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="section-title">Divisions</h2>
+                <p className="section-subtitle">Manage intermediate division layers</p>
               </div>
-              {(isLeagueOwner || isDivisionAdmin || isSuperAdmin()) && (
-                <button onClick={() => setIsCreatingDivision(true)} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold text-xs hover:bg-blue-700 transition flex items-center gap-1.5 shadow-sm">
-                  <Plus className="w-3.5 h-3.5" /> New Division
-                </button>
-              )}
+              <button onClick={() => setIsCreatingDivision(true)} className="text-slate-400 hover:text-slate-600 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-all">
+                <Plus className="w-3 h-3" /> Add Division
+              </button>
             </div>
 
-            {ownedDivisions.length === 0 && !isSuperAdmin() ? (
-              <div className="bg-white border border-dashed border-gray-200 rounded-xl p-10 text-center">
-                <Layers className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-                <h3 className="text-sm font-semibold text-gray-600 mb-1">No Divisions Yet</h3>
-                <p className="text-xs text-gray-400 mb-4">Create a division within your league to get started.</p>
-                <button onClick={() => setIsCreatingDivision(true)} className="bg-blue-100 text-blue-800 px-5 py-2 rounded-lg font-semibold text-sm hover:bg-blue-200 transition">Create Division</button>
+            {ownedDivisions.length === 0 ? (
+              <div className="card-premium p-12 text-center border-dashed border-2 border-slate-100 bg-slate-50/30">
+                <Layers className="w-10 h-10 text-slate-200 mx-auto mb-3" />
+                <h3 className="text-sm font-semibold text-slate-600 mb-1">No Divisions</h3>
+                <p className="text-[10px] text-slate-400 font-medium mb-4">Divisions help group teams within a league.</p>
+                <button onClick={() => setIsCreatingDivision(true)} className="bg-slate-800 text-white px-5 py-2 rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-sm hover:bg-slate-900 transition">Add Division</button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {ownedDivisions.map(division => {
                   const league = [...ownedLeagues, ...contextLeagues].find(l => l.id === division.leagueId);
                   return (
                     <Link key={division.id} to={`/pro/division/${division.id}`}
-                      className="group bg-white border-l-4 border-l-blue-400 border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-300 transition-all duration-200 block"
+                      className="card-premium group hover:shadow-md transition-all"
                     >
-                      <div className="p-5">
-                        <div className="flex items-start justify-between gap-3 mb-3">
-                          <div className="flex items-start gap-3">
-                            <div className="w-9 h-9 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center shrink-0">
-                              <Layers className="w-[18px] h-[18px]" />
-                            </div>
-                            <div className="min-w-0">
-                              <h3 className="font-semibold text-gray-900 text-sm leading-tight">{division.name}</h3>
-                              {league && <p className="text-xs text-gray-400 mt-0.5 truncate">{league.name}</p>}
-                            </div>
-                          </div>
-                          {(isLeagueOwner || isSuperAdmin()) && (
-                            <button
-                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteDivision(division.id, division.name); }}
-                              className="p-1.5 text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100 shrink-0"
-                            ><Trash2 className="w-3.5 h-3.5" /></button>
-                          )}
-                        </div>
-                      </div>
-                      <div className="px-5 py-3 bg-blue-50 border-t border-blue-100 flex items-center justify-between">
-                        <span className="text-xs font-semibold text-blue-700">Open Division Dashboard</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-blue-500 group-hover:translate-x-0.5 transition-transform" />
+                      <div className="p-6">
+                         <div className="w-10 h-10 bg-slate-600 text-white rounded-lg flex items-center justify-center mb-5 shadow-sm">
+                            <Layers className="w-5 h-5" />
+                         </div>
+                         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight mb-1">{division.name}</h3>
+                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest truncate mb-6">{league?.name || 'League'}</p>
+                         <div className="flex items-center text-emerald-600 font-bold text-[10px] uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                           Manage Division <ChevronRight className="w-3 h-3 ml-1" />
+                         </div>
                       </div>
                     </Link>
                   );
@@ -580,69 +461,48 @@ export default function ProDashboard() {
           </section>
         )}
 
-        {/* ── Division Context banner (read-only for Coaches) ── */}
-        {isCoach && contextDivisions.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 flex items-center gap-4">
-            <div className="w-9 h-9 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center shrink-0">
-              <Layers className="w-[18px] h-[18px]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-blue-500 uppercase tracking-wide mb-0.5">Your Division</p>
-              <p className="text-sm font-semibold text-gray-900 truncate">{contextDivisions[0]?.name}</p>
-            </div>
-            <span className="text-[10px] font-semibold text-blue-500 bg-blue-100 px-2 py-1 rounded-full uppercase tracking-wide shrink-0">View Only</span>
-          </div>
-        )}
-
-        {/* ── My Teams ── */}
+        {/* Teams */}
         <section>
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-              <h2 className="text-base font-semibold text-gray-900">My Teams</h2>
-              <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">{teams.length}</span>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="section-title">Teams</h2>
+              <p className="section-subtitle">Manage rosters and lineups for active teams</p>
             </div>
-            <button onClick={() => setIsCreatingTeam(true)} className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-xs hover:bg-green-700 transition flex items-center gap-1.5 shadow-sm">
-              <Plus className="w-3.5 h-3.5" /> New Team
+            <button onClick={() => setIsCreatingTeam(true)} className="text-emerald-600 hover:text-emerald-700 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-all">
+              <Plus className="w-3 h-3" /> New team
             </button>
           </div>
 
           {teams.length === 0 ? (
-            <div className="bg-white border border-dashed border-gray-200 rounded-xl p-12 text-center">
-              <Users className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-              <h3 className="text-sm font-semibold text-gray-600 mb-1">No Teams Yet</h3>
-              <p className="text-xs text-gray-400 mb-5">Create your first team to start managing your season.</p>
-              <button onClick={() => setIsCreatingTeam(true)} className="bg-green-100 text-green-800 px-5 py-2 rounded-lg font-semibold text-sm hover:bg-green-200 transition">Create Team</button>
+            <div className="card-premium p-10 text-center border-dashed border-2 border-slate-100 bg-slate-50/30">
+              <Users className="w-10 h-10 text-slate-200 mx-auto mb-3" />
+              <h3 className="text-sm font-semibold text-slate-600 mb-1">No Active Teams</h3>
+              <p className="text-[10px] text-slate-400 font-medium mb-4">Start by creating your first team.</p>
+              <button onClick={() => setIsCreatingTeam(true)} className="bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-sm hover:bg-emerald-700 transition">Create Team</button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {teams.map(team => {
-                const allDivisions = [...ownedDivisions, ...contextDivisions];
-                const allLeagues = [...ownedLeagues, ...contextLeagues];
-                const div = allDivisions.find(d => d.id === team.divisionId);
-                const league = allLeagues.find(l => l.id === team.leagueId);
-                return (
-                  <Link key={team.id} to={`/pro/team/${team.id}`}
-                    className="group bg-white border-l-4 border-l-green-400 border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-green-300 transition-all duration-200 block"
-                  >
-                    <div className="p-5">
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className="w-9 h-9 bg-green-100 text-green-700 rounded-lg flex items-center justify-center shrink-0">
-                          <Users className="w-[18px] h-[18px]" />
+                  {sortedTeams.map(team => {
+                    const div = [...ownedDivisions, ...contextDivisions].find(d => d.id === team.divisionId);
+                    const league = [...ownedLeagues, ...contextLeagues].find(l => l.id === team.leagueId);
+                    const themeClass = getDivisionTheme(div?.name);
+
+                    return (
+                      <Link key={team.id} to={`/pro/team/${team.id}`}
+                        className={`card-premium card-premium-hover p-4 flex items-center gap-4 border-l-4 ${themeClass}`}
+                      >
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 shadow-sm border ${themeClass}`}>
+                          <Trophy className="w-5 h-5" />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="font-semibold text-gray-900 text-sm leading-tight">{team.name}</h3>
-                          <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                            {league && <span className="text-[10px] font-semibold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">{league.name}</span>}
-                            {div && <span className="text-[10px] font-semibold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">{div.name}</span>}
-                          </div>
-                        </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight truncate mb-0.5">{team.name}</h3>
+                      <div className="flex flex-wrap items-center gap-1">
+                        {league && <span className="badge-breadcrumb">{league.name}</span>}
+                        {league && div && <ChevronRight className="w-2 h-2 text-slate-300" />}
+                        {div && <span className="badge-breadcrumb">{div.name}</span>}
                       </div>
                     </div>
-                    <div className="px-5 py-3 bg-green-50 border-t border-green-100 flex items-center justify-between">
-                      <span className="text-xs font-semibold text-green-700">Open Team Dashboard</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-green-500 group-hover:translate-x-0.5 transition-transform" />
-                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-200 shrink-0 group-hover:text-emerald-500 transition-colors" />
                   </Link>
                 );
               })}
@@ -651,82 +511,44 @@ export default function ProDashboard() {
         </section>
       </main>
 
-      {/* ── League Setup Wizard ── */}
-      {isCreatingLeague && (
-        <LeagueSetupWizard
-          currentUser={currentUser}
-          onClose={() => setIsCreatingLeague(false)}
-          onComplete={() => { setIsCreatingLeague(false); window.location.reload(); }}
-        />
-      )}
-
-      {/* ── Division Setup Wizard ── */}
+      {/* wizards */}
       {isCreatingDivision && (() => {
-        // Resolve which league to use for the wizard
-        const allAvailLeagues = [...new Map([...ownedLeagues, ...contextLeagues].map(l => [l.id, l])).values()];
-        // If only one league available, go straight to wizard
-        if (allAvailLeagues.length === 1) {
-          return (
+         const allAvailLeagues = [...new Map([...ownedLeagues, ...contextLeagues].map(l => [l.id, l])).values()];
+         if (allAvailLeagues.length === 0) return null;
+         
+         if (!newDivisionLeagueId && allAvailLeagues.length > 1) {
+            return (
+              <div className="fixed inset-0 bg-slate-900/40 z-[200] flex items-center justify-center p-4">
+                <div className="bg-white rounded-lg w-full max-w-sm shadow-2xl overflow-hidden animation-in zoom-in-95 duration-200 border border-slate-100">
+                  <div className="bg-slate-800 px-6 py-4 flex items-center justify-between">
+                    <h2 className="text-[10px] font-bold text-white uppercase tracking-widest">Select Parent League</h2>
+                    <button onClick={() => setIsCreatingDivision(false)} className="w-7 h-7 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-white/20 transition">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="p-5 space-y-2">
+                     {allAvailLeagues.map(l => (
+                      <button key={l.id} onClick={() => setNewDivisionLeagueId(l.id)} className="w-full flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 transition-all text-left">
+                        <Trophy className="w-4 h-4 text-slate-300" />
+                        <span className="font-semibold text-slate-700 text-xs">{l.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+         }
+
+         const selectedLeague = allAvailLeagues.find(l => l.id === newDivisionLeagueId) || allAvailLeagues[0];
+         return (
             <DivisionSetupWizard
               currentUser={currentUser}
-              leagueId={allAvailLeagues[0].id}
-              leagueName={allAvailLeagues[0].name}
-              onClose={() => setIsCreatingDivision(false)}
-              onComplete={() => { setIsCreatingDivision(false); window.location.reload(); }}
+              leagueId={selectedLeague.id}
+              leagueName={selectedLeague.name}
+              onClose={() => { setIsCreatingDivision(false); setNewDivisionLeagueId(''); }}
+              onComplete={() => { setIsCreatingDivision(false); setNewDivisionLeagueId(''); window.location.reload(); }}
             />
-          );
-        }
-        // Multiple leagues — show a quick league picker modal first
-        return (
-          <div className="fixed inset-0 bg-slate-900/60 z-[200] flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
-              <div className="bg-slate-700 px-7 py-5 flex items-center justify-between">
-                <h2 className="text-base font-bold text-white uppercase tracking-wide">Which League?</h2>
-                <button onClick={() => setIsCreatingDivision(false)} className="w-8 h-8 bg-slate-600 text-white rounded-full flex items-center justify-center hover:bg-slate-500 transition">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="p-6 space-y-3">
-                <p className="text-slate-400 text-sm font-bold mb-4">Select the league this division belongs to.</p>
-                {allAvailLeagues.map(l => (
-                  <button
-                    key={l.id}
-                    onClick={() => setNewDivisionLeagueId(l.id)}
-                    className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all text-left
-                      ${newDivisionLeagueId === l.id ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
-                  >
-                    <Trophy className={`w-5 h-5 shrink-0 ${newDivisionLeagueId === l.id ? 'text-blue-500' : 'text-slate-400'}`} />
-                    <span className="font-bold text-slate-800 text-sm">{l.name}</span>
-                  </button>
-                ))}
-                <button
-                  disabled={!newDivisionLeagueId}
-                  onClick={() => { /* sets selected, will re-render to wizard below */ }}
-                  className="w-full mt-2 bg-slate-700 text-white py-3 rounded-xl font-bold text-sm disabled:opacity-40"
-                >
-                  Continue →
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* If league was selected from picker, show the division wizard */}
-      {isCreatingDivision && newDivisionLeagueId && (() => {
-        const allAvailLeagues = [...new Map([...ownedLeagues, ...contextLeagues].map(l => [l.id, l])).values()];
-        if (allAvailLeagues.length <= 1) return null; // already handled above
-        const selectedLeague = allAvailLeagues.find(l => l.id === newDivisionLeagueId);
-        if (!selectedLeague) return null;
-        return (
-          <DivisionSetupWizard
-            currentUser={currentUser}
-            leagueId={selectedLeague.id}
-            leagueName={selectedLeague.name}
-            onClose={() => { setIsCreatingDivision(false); setNewDivisionLeagueId(''); }}
-            onComplete={() => { setIsCreatingDivision(false); setNewDivisionLeagueId(''); window.location.reload(); }}
-          />
-        );
+         );
       })()}
     </div>
   );
